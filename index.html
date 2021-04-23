@@ -120,12 +120,14 @@
   'sants-montjuic': 'sants-montjuic.json',
 }
 
-  let load_poly = async (filename) => {
+  let load_poly = async (name,filename) => {
       let coords = await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-      let test = L.geoJSON(coords).addTo(mymap);
+      let polygon = L.geoJSON(coords).addTo(mymap);
+      polygon.bindPopup(name)
+      polygon.on('click', () => alert(`You clicked on ${name}`))
   }
 
-  Object.entries(districts).forEach(([name, filename]) => load_poly(filename))
+  Object.entries(districts).forEach(([name, filename]) => load_poly(name,filename))
 
 
 
