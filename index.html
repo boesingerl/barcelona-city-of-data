@@ -19,6 +19,9 @@
 
   <!-- Custom styles for this template -->
   <link href="./index_files/jumbotron.css" rel="stylesheet">
+  <script src="./index_files/lodash.js"></script>
+  <script src="./index_files/d3.js"></script>
+
   <script data-dapp-detection="">
     (function() {
       let e = !1;
@@ -96,11 +99,15 @@
         <div id="mapid" style="width: 600px; height: 400px;"></div>
 <script>
 
-	var mymap = L.map('mapid').setView([41.4,2.1592], 13);
+  var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
+	var mymap = L.map('mapid',{
+    maxBounds: bounds
+  }).setView([41.37,2.1592], 11);
 
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+    minZoom: 11,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
 			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		id: 'mapbox/streets-v11',
 		tileSize: 512,
@@ -108,27 +115,62 @@
 	}).addTo(mymap);
 
   let districts = {
-  'nou-barris': 'nou-barris.json',
-  'eixample': 'eixample.json',
-  'ciutat-vella': 'ciutat-vella.json',
-  'gracia': 'gracia.json',
-  'sant-marti': 'sant-marti.json',
-  'sant-andreu': 'sant-andreu.json',
-  'les-corts': 'les-corts.json',
-  'horta-guinardo': 'horta-guinardo.json',
-  'sarria-sant-gervasi': 'sarria-sant-gervasi.json',
-  'sants-montjuic': 'sants-montjuic.json',
-}
-
-  let load_poly = async (name,filename) => {
-      let coords = await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-      let polygon = L.geoJSON(coords).addTo(mymap);
-      polygon.bindPopup(name)
-      polygon.on('click', () => alert(`You clicked on ${name}`))
+  'Nou Barris': 'nou-barris.json',
+  'Eixample': 'eixample.json',
+  'Ciutat Vella': 'ciutat-vella.json',
+  'Gràcia': 'gracia.json',
+  'Sant Martí': 'sant-marti.json',
+  'Sant Andreu': 'sant-andreu.json',
+  'Les Corts': 'les-corts.json',
+  'Horta-Guinardó': 'horta-guinardo.json',
+  'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
+  'Sants-Montjuïc': 'sants-montjuic.json',
   }
 
-  Object.entries(districts).forEach(([name, filename]) => load_poly(name,filename))
+  mymap.on('drag', function() {
+    mymap.panInsideBounds(bounds, {animate: false});
+  });
 
+  mymap.getRenderer(mymap).options.padding = 0.5;
+
+
+  let load_poly = async (name,filename, polygons) => {
+      let coords =  await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+      let polygon = L.geoJSON(coords).addTo(mymap);
+      polygons[name] = polygon;
+  }
+
+
+let f = async function() {
+  let polygons = {};
+  for (const [name, filename] of Object.entries(districts)) {
+      await load_poly(name,filename,polygons);
+  }
+  return polygons;
+};
+f().then(polygons => {
+  d3.csv('./data/accidents_2017.csv').then(data => {
+    let accidents_2017 = _.countBy(data, x => x['DistrictName'])
+    console.log(_.values(accidents_2017));
+    let max = _.max(_.values(accidents_2017)) * 1.5;
+    let min = 0
+
+    for (const [district, polygon] of Object.entries(polygons)) {
+      polygon.bindPopup(String(accidents_2017[district]))
+      let r = 255 - parseInt((accidents_2017[district]/max)* 255,10)
+
+      console.log(r);
+      let s = "#".concat(r.toString(16)).concat("0000")
+      console.log(s);
+      polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
+
+    }
+        //polygon.bindPopup(String(b[name]))
+        //polygon.on('click', () => alert(`You clicked on ${name}`)
+  });
+
+
+});
 
 
 </script>
@@ -177,6 +219,10 @@
   <script src="./index_files/bootstrap.min.js"></script>
 
 
+  <script>
+
+
+  </script>
 </body>
 
 </html>
