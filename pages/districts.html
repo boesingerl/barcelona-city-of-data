@@ -8,18 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="icon" href="index_files/favicon.ico">
+  <link rel="icon" href="../index_files/favicon.ico">
 
   <title>Project Zozo</title>
 
 
   <!-- Bootstrap core CSS -->
-  <link href="./index_files/bootstrap.min.css" rel="stylesheet">
+  <link href="../index_files/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="./index_files/jumbotron.css" rel="stylesheet">
-  <script src="./index_files/lodash.js"></script>
-  <script src="./index_files/d3.js"></script>
+  <link href="../index_files/jumbotron.css" rel="stylesheet">
+  <script src="../index_files/lodash.js"></script>
+  <script src="../index_files/d3.js"></script>
 
   <script data-dapp-detection="">
     (function() {
@@ -56,26 +56,26 @@
 <body>
 
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="./">Project Zozo : A Barcelona Visualization</a>
+    <a class="navbar-brand" href="../index.html">Project Zozo : A Barcelona Visualization</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="choropleth.html">Choropleth and Cartogram</a>
+        </li>
+
         <li class="nav-item active">
-          <a class="nav-link" href="./">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pages/choropleth.html">Choropleth and Cartogram</a>
+          <a class="nav-link" href="districts.html">District comparison</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="pages/districts.html">District comparison</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="pages/about.html">About us</a>
+          <a class="nav-link" href="about.html">About us</a>
         </li>
 
       </ul>
@@ -87,10 +87,12 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container d-flex justify-content-center pb-5">
-        <h1>Overall and Per-District statistics </h1>
+        <h1> District comparison </h1>
       </div>
       <div class="container d-flex justify-content-center">
+        <div>
         <div id="mapid" style="width: 600px; height: 400px;"></div>
+
 <script>
 
   var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
@@ -127,7 +129,7 @@
 
 
   let load_poly = async (name,filename, polygons) => {
-      let coords =  await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+      let coords =  await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
       let polygon = L.geoJSON(coords).addTo(mymap);
       polygons[name] = polygon;
   }
@@ -166,6 +168,39 @@ f().then(polygons => {
 
 
 </script>
+</div>
+<div class="justify-content-center pl-5">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">District 1</th>
+        <th scope="col">District 2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Area</th>
+        <td>0</td>
+        <td>0</td>
+
+      </tr>
+      <tr>
+        <th scope="row">Population</th>
+        <td>0</td>
+        <td>0</td>
+
+      </tr>
+      <tr>
+        <th scope="row"># Neighborhoods</th>
+        <td>0</td>
+        <td>0</td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
       </div>
     </div>
 
@@ -173,50 +208,19 @@ f().then(polygons => {
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Heading1</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+          <h2>Graph1</h2>
           </div>
         <div class="col-md-4">
-          <h2>Heading2</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
-          </div>
+          <h2>Graph2</h2>
+        </div>
         <div class="col-md-4">
-          <h2>Heading3</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
-          </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Heading4</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
-          </div>
-        <div class="col-md-4">
-          <h2>Heading5</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
-          </div>
-        <div class="col-md-4">
-          <h2>Heading6</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+          <h2>Graph3</h2>
           </div>
       </div>
 
       <hr>
 
     </div> <!-- /container -->
-
-    <div id="slider-range"></div>
 
   </main>
 
