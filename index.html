@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0054)https://getbootstrap.com/docs/4.0/examples/jumbotron/# -->
 <html lang="en">
 
 <head>
@@ -48,9 +47,11 @@
       }
     })();
   </script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+  <link rel="stylesheet" href="index_files/rSlider.min.css">
+  <script src="index_files/rSlider.min.js"></script>
 </head>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
 
 <body>
@@ -167,6 +168,21 @@ f().then(polygons => {
 
 </script>
       </div>
+      <div class="container d-flex justify-content-center mt-5">
+        <div>
+          <input type="text" id="slider" class="slider">
+          <script>
+            var mySlider = new rSlider({
+            target: '#slider',
+            values: [2008, 2009, 2010, 2011, 2012, 2013],
+            width: 500,
+            range: true // range slider
+            });
+          </script>
+        </div>
+
+      </div>
+
     </div>
 
     <div class="container">
@@ -216,7 +232,7 @@ f().then(polygons => {
 
     </div> <!-- /container -->
 
-    <div id="slider-range"></div>
+
 
   </main>
 
