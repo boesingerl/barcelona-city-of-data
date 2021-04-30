@@ -144,20 +144,15 @@ let f = async function() {
 f().then(polygons => {
   d3.csv('./data/accidents_2017.csv').then(data => {
     let accidents_2017 = _.countBy(data, x => x['DistrictName'])
-    console.log(_.values(accidents_2017));
-    let max = _.max(_.values(accidents_2017)) * 1.5;
-    let min = 0
-
-    for (const [district, polygon] of Object.entries(polygons)) {
-      polygon.bindPopup(String(accidents_2017[district]))
-      let r = 255 - parseInt((accidents_2017[district]/max)* 255,10)
-
-      console.log(r);
-      let s = "#".concat(r.toString(16)).concat("0000")
-      console.log(s);
-      polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
-
-    }
+                  const extent = d3.extent(_.values(accidents_2017));
+                  const reds = d3.scaleLinear(extent, [0.3, 0.8])
+                  const col = (x) => d3.interpolateReds(reds(x))
+                  for (const [district, polygon] of Object.entries(polygons)) {
+                    const num_acc = parseInt(accidents_2017[district])
+                    polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
+                    let s = col(num_acc)
+                    polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
+                  }
         //polygon.bindPopup(String(b[name]))
         //polygon.on('click', () => alert(`You clicked on ${name}`)
   });
