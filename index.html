@@ -21,7 +21,7 @@
   <link href="./index_files/jumbotron.css" rel="stylesheet">
   <script src="./index_files/lodash.js"></script>
   <script src="./index_files/d3.js"></script>
-
+  <script src="https://d3js.org/d3-geo.v2.min.js"></script>
   <script data-dapp-detection="">
     (function() {
       let e = !1;
@@ -96,84 +96,244 @@
       <div class="container">
         <h1 class="display-3">Hello, world!</h1>
         <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a class="btn btn-secondary" onclick="switchmap()" role="button">Switch map</a></p>
         <div id="mapid" style="width: 600px; height: 400px;"></div>
-<script>
+        <script>
+          let bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
+          var mymap = L.map('mapid', {
+            maxBounds: bounds
+          }).setView([41.37, 2.1592], 11);
 
-  var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
-	var mymap = L.map('mapid',{
-    maxBounds: bounds
-  }).setView([41.37,2.1592], 11);
+          L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            minZoom: 11,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+              'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1
+          }).addTo(mymap);
 
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-    minZoom: 11,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		id: 'mapbox/streets-v11',
-		tileSize: 512,
-		zoomOffset: -1
-	}).addTo(mymap);
+          let districts = {
+            'Nou Barris': 'nou-barris.json',
+            'Eixample': 'eixample.json',
+            'Ciutat Vella': 'ciutat-vella.json',
+            'Gràcia': 'gracia.json',
+            'Sant Martí': 'sant-marti.json',
+            'Sant Andreu': 'sant-andreu.json',
+            'Les Corts': 'les-corts.json',
+            'Horta-Guinardó': 'horta-guinardo.json',
+            'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
+            'Sants-Montjuïc': 'sants-montjuic.json',
+          }
 
-  let districts = {
-  'Nou Barris': 'nou-barris.json',
-  'Eixample': 'eixample.json',
-  'Ciutat Vella': 'ciutat-vella.json',
-  'Gràcia': 'gracia.json',
-  'Sant Martí': 'sant-marti.json',
-  'Sant Andreu': 'sant-andreu.json',
-  'Les Corts': 'les-corts.json',
-  'Horta-Guinardó': 'horta-guinardo.json',
-  'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-  'Sants-Montjuïc': 'sants-montjuic.json',
-  }
+          mymap.on('drag', function() {
+            mymap.panInsideBounds(bounds, {
+              animate: false
+            });
+          });
 
-  mymap.on('drag', function() {
-    mymap.panInsideBounds(bounds, {animate: false});
-  });
-
-  mymap.getRenderer(mymap).options.padding = 0.5;
-
-
-  let load_poly = async (name,filename, polygons) => {
-      let coords =  await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-      let polygon = L.geoJSON(coords).addTo(mymap);
-      polygons[name] = polygon;
-  }
+          mymap.getRenderer(mymap).options.padding = 0.5;
 
 
-let f = async function() {
-  let polygons = {};
-  for (const [name, filename] of Object.entries(districts)) {
-      await load_poly(name,filename,polygons);
-  }
-  return polygons;
-};
-f().then(polygons => {
-  d3.csv('./data/accidents_2017.csv').then(data => {
-    let accidents_2017 = _.countBy(data, x => x['DistrictName'])
-    console.log(_.values(accidents_2017));
-    let max = _.max(_.values(accidents_2017)) * 1.5;
-    let min = 0
+          let load_poly = async (name, filename, polygons) => {
+            let coords = await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+            let polygon = L.geoJSON(coords).addTo(mymap);
+            polygons[name] = polygon;
+          }
 
-    for (const [district, polygon] of Object.entries(polygons)) {
-      polygon.bindPopup(String(accidents_2017[district]))
-      let r = 255 - parseInt((accidents_2017[district]/max)* 255,10)
+          /*
+          let f = async function() {
+            let polygons = {};
+            for (const [name, filename] of Object.entries(districts)) {
+                await load_poly(name,filename,polygons);
+            }
+            return polygons;
+          };
 
-      console.log(r);
-      let s = "#".concat(r.toString(16)).concat("0000")
-      console.log(s);
-      polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
+          f().then(polygons => {
+            d3.csv('./data/accidents_2017.csv').then(data => {
+              let accidents_2017 = _.countBy(data, x => x['District Name'])
+              const extent = d3.extent(_.values(accidents_2017));
 
-    }
-        //polygon.bindPopup(String(b[name]))
-        //polygon.on('click', () => alert(`You clicked on ${name}`)
-  });
+              const reds = d3.scaleLinear(extent, [0.3, 0.8])
+              const col = (x) => d3.interpolateReds(reds(x))
+
+              for (const [district, polygon] of Object.entries(polygons)) {
+                const num_acc = parseInt(accidents_2017[district])
+                polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
+                let s = col(num_acc)
+                polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
+
+              }
+                  //polygon.bindPopup(String(b[name]))
+                  //polygon.on('click', () => alert(`You clicked on ${name}`)
+            });
 
 
-});
+          });*/
 
 
-</script>
+          let svg = d3.select(mymap.getPanes().overlayPane).append("svg"),
+            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+          async function launch_physics() {
+
+            var nodes = [{
+              id: 0
+            }, {
+              id: 1
+            }, {
+              id: 2
+            }, {
+              id: 3
+            }, {
+              id: 4
+            }, {
+              id: 5
+            }, {
+              id: 6
+            }, {
+              id: 7
+            }, {
+              id: 8
+            }, {
+              id: 9
+            }]
+            var links = []
+
+            for (i = 0; i < 10; i++) {
+              for (j = 0; j < 10; j++) {
+                links.push({
+                  source: i,
+                  target: j
+                })
+              }
+            }
+
+            svg.attr("width", 1000)
+              .attr("height", 1000)
+
+            d3.select('#mapid').style('width', '1000px').style('height', '1000px')
+            var simulation = d3.forceSimulation(nodes)
+              .force('charge', d3.forceManyBody().strength(-0.1))
+              .force('center', d3.forceCenter(100, 250).strength(0.11))
+              .force('linkForce', d3.forceLink(links).distance(400).strength(0.1))
+              .on('tick', ticked)
+              .tick(5)
+
+            function ticked() {
+              svg
+                .selectAll("path")
+                .data(nodes)
+                .attr("transform", function(d) {
+                  return "translate(" + (d.x) + "," + (d.y) + ")";
+                })
+
+            }
+            return simulation
+          }
+
+          load_polyd3('Merged', `polygons/combined.json`).then(([feature, path, collection]) => {
+            thisFeature = feature
+            thisPath = path;
+            thisCollection = collection
+          })
+
+          var showMap = true
+
+          var simu = null
+
+          async function switchmap() {
+            if (showMap) {
+              d3.select('.leaflet-tile-pane').transition().duration(100).style('opacity', 0)
+              d3.select('#mapid').transition().duration(100).style('background', 'transparent')
+              d3.selectAll('.leaflet-control').transition().duration(1000).style('opacity', 0)
+              simu = await launch_physics()
+              mymap.touchZoom.disable();
+              mymap.doubleClickZoom.disable();
+              mymap.scrollWheelZoom.disable();
+              showMap = false
+            } else {
+              d3.select('#mapid').style('width', '600px').style('height', '400px')
+              d3.select('.leaflet-tile-pane').transition().duration(100).style('opacity', 1)
+              d3.selectAll('.leaflet-control').transition().duration(100).style('opacity', 1)
+              //load_polyd3('Merged', `polygons/combined.json`)
+
+              console.log(simu)
+              simu.stop()
+
+              d3.selectAll('path').remove()
+
+              load_polyd3('Merged', `polygons/combined.json`).then(([feature, path, collection]) => {
+                thisFeature = feature
+                thisPath = path;
+                thisCollection = collection
+              })
+
+              mymap.touchZoom.enable();
+              mymap.doubleClickZoom.enable();
+              mymap.scrollWheelZoom.enable();
+
+
+              mymap.on("zoomend", () => reset(feature, path, collection));
+
+              showMap = true
+            }
+
+          }
+
+          function projectPoint(x, y) {
+            let point = mymap.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+          }
+
+          async function load_polyd3(name, filename) {
+            let collection = await d3.json(filename)
+
+            let transform = d3.geoTransform({
+                point: projectPoint
+              }),
+              path = d3.geoPath().projection(transform);
+
+
+            let feature = g.selectAll("path")
+              .data(collection.features)
+              .enter()
+              .append("path");
+
+            feature.attr('fill-opacity', 0.5).attr('stroke', 'red').attr('stroke-width', 3)
+
+
+            mymap.on("zoomend", () => reset(feature, path, collection));
+            reset(feature, path, collection);
+
+            return [feature, path, collection]
+          }
+
+          // Reposition the SVG to cover the features.
+          function reset(feature, path, collection) {
+            console.log("reset")
+            let bounds = path.bounds(collection),
+              topLeft = bounds[0],
+              bottomRight = bounds[1];
+
+            svg.attr("width", bottomRight[0] - topLeft[0])
+              .attr("height", bottomRight[1] - topLeft[1])
+              .style("left", topLeft[0] + "px")
+              .style("top", topLeft[1] + "px");
+
+            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+            d3.selectAll('path').attr("d", path);
+
+            console.log(path)
+
+
+          }
+
+
+          console.log(d3.select('#mapid'))
+        </script>
       </div>
     </div>
 
