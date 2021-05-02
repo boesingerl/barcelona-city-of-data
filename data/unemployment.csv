@@ -1,4 +1,4 @@
-"Year","Month","District Code","District Name","Neighborhood Code","Neighborhood Name","Gender","Demand_occupation","Number"
+"Year","Month","District.Code","District.Name","Neighborhood.Code","Neighborhood.Name","Gender","Demand_occupation","Number"
 "2017","January","1","Ciutat Vella","1","el Raval","Male","Registered unemployed",2107
 "2017","January","1","Ciutat Vella","2","el Barri Gòtic","Male","Registered unemployed",538
 "2017","January","1","Ciutat Vella","3","la Barceloneta","Male","Registered unemployed",537

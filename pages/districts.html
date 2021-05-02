@@ -129,9 +129,9 @@
 
 
   let load_poly = async (name,filename, polygons) => {
-      let coords =  await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+      let [coords, population] =  await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => [json['geometry'],json['extratags']['population']] )
       let polygon = L.geoJSON(coords).addTo(mymap);
-      polygons[name] = polygon;
+      polygons[name] = {polygon:polygon, population:population};
   }
 
 
@@ -144,8 +144,22 @@ let f = async function() {
 };
 f().then(polygons => {
 
-    for (const [district, polygon] of Object.entries(polygons)) {
-      polygon.bindPopup(`You selected district ${district}`)
+    let selector = onClick()
+
+    for (const [district, obj] of Object.entries(polygons)) {
+      obj['polygon'].on('click', () => {
+        const i = selector()
+        d3.select("#name" + i).text(district)
+        d3.select("#pop" + i).text(obj['population'])
+      })
+    }
+
+    function onClick(){
+      let i = -1
+      return () => {
+        i = (i+1)%2
+        return i
+      }
     }
         //polygon.bindPopup(String(b[name]))
         //polygon.on('click', () => alert(`You clicked on ${name}`)
@@ -162,27 +176,27 @@ f().then(polygons => {
     <thead class="thead-dark">
       <tr>
         <th scope="col">Category</th>
-        <th scope="col">District 1</th>
-        <th scope="col">District 2</th>
+        <th scope="col" id='name0'>District 1</th>
+        <th scope="col" id='name1'>District 2</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <th scope="row">Area</th>
-        <td>0</td>
-        <td>0</td>
+        <td id='area0'>0</td>
+        <td id='area1'>0</td>
 
       </tr>
       <tr>
         <th scope="row">Population</th>
-        <td>0</td>
-        <td>0</td>
+        <td id='pop0'>0</td>
+        <td id='pop1'>0</td>
 
       </tr>
       <tr>
         <th scope="row"># Neighborhoods</th>
-        <td>0</td>
-        <td>0</td>
+        <td id='neigh0'>0</td>
+        <td id='neigh1'>0</td>
 
       </tr>
     </tbody>
@@ -219,12 +233,12 @@ f().then(polygons => {
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="./index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="../index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
   </script>
-  <script src="./index_files/popper.min.js"></script>
-  <script src="./index_files/bootstrap.min.js"></script>
+  <script src="../index_files/popper.min.js"></script>
+  <script src="../index_files/bootstrap.min.js"></script>
 
 
   <script>

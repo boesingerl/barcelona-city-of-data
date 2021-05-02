@@ -93,91 +93,123 @@
 
 
         <div id="mapid" style="width: 600px; height: 400px;"></div>
-<script>
+        <script>
+          var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
+          var mymap = L.map('mapid', {
+            maxBounds: bounds
+          }).setView([41.37, 2.1592], 11);
 
-  var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
-	var mymap = L.map('mapid',{
-    maxBounds: bounds
-  }).setView([41.37,2.1592], 11);
+          L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            minZoom: 11,
+            id: 'mapbox/light-v10',
+            tileSize: 512,
+            zoomOffset: -1
+          }).addTo(mymap);
 
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-    minZoom: 11,
-		id: 'mapbox/light-v10',
-		tileSize: 512,
-		zoomOffset: -1
-	}).addTo(mymap);
+          let districts = {
+            'Nou Barris': 'nou-barris.json',
+            'Eixample': 'eixample.json',
+            'Ciutat Vella': 'ciutat-vella.json',
+            'Gràcia': 'gracia.json',
+            'Sant Martí': 'sant-marti.json',
+            'Sant Andreu': 'sant-andreu.json',
+            'Les Corts': 'les-corts.json',
+            'Horta-Guinardó': 'horta-guinardo.json',
+            'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
+            'Sants-Montjuïc': 'sants-montjuic.json',
+          }
 
-  let districts = {
-  'Nou Barris': 'nou-barris.json',
-  'Eixample': 'eixample.json',
-  'Ciutat Vella': 'ciutat-vella.json',
-  'Gràcia': 'gracia.json',
-  'Sant Martí': 'sant-marti.json',
-  'Sant Andreu': 'sant-andreu.json',
-  'Les Corts': 'les-corts.json',
-  'Horta-Guinardó': 'horta-guinardo.json',
-  'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-  'Sants-Montjuïc': 'sants-montjuic.json',
-  }
+          mymap.on('drag', function() {
+            mymap.panInsideBounds(bounds, {
+              animate: false
+            });
+          });
 
-  mymap.on('drag', function() {
-    mymap.panInsideBounds(bounds, {animate: false});
-  });
+          mymap.getRenderer(mymap).options.padding = 0.5;
 
-  mymap.getRenderer(mymap).options.padding = 0.5;
-
-
-  let load_poly = async (name,filename, polygons) => {
-      let coords =  await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-      let polygon = L.geoJSON(coords).addTo(mymap);
-      polygons[name] = polygon;
-  }
-
-
-let f = async function() {
-  let polygons = {};
-  for (const [name, filename] of Object.entries(districts)) {
-      await load_poly(name,filename,polygons);
-  }
-  return polygons;
-};
-f().then(polygons => {
-  d3.csv('../data/accidents_2017.csv').then(data => {
-    let accidents_2017 = _.countBy(data, x => x['DistrictName'])
-                  const extent = d3.extent(_.values(accidents_2017));
-                  const reds = d3.scaleLinear(extent, [0.3, 0.8])
-                  const col = (x) => d3.interpolateReds(reds(x))
-                  for (const [district, polygon] of Object.entries(polygons)) {
-                    const num_acc = parseInt(accidents_2017[district])
-                    polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
-                    let s = col(num_acc)
-                    polygon.setStyle({fillColor: s, fillOpacity: 0.5, opacity : 0.6, color: s})
-                  }
-        //polygon.bindPopup(String(b[name]))
-        //polygon.on('click', () => alert(`You clicked on ${name}`)
-  });
+          let load_poly = async (name, filename, polygons) => {
+            let coords = await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+            let polygon = L.geoJSON(coords).addTo(mymap);
+            polygons[name] = polygon;
+          }
 
 
-});
+          let f = async function() {
+            let polygons = {};
+            for (const [name, filename] of Object.entries(districts)) {
+              await load_poly(name, filename, polygons);
+            }
+            return polygons;
+          };
+
+          var poly = f()
+
+          async function setFeature(datapath){
+            let polygons = await poly
+            let data = await d3.csv(datapath)
+            //let districtValues = _.countBy(data, x => x['District.Name'])
+            let districtValues = _(data)
+              .groupBy('District.Name')
+              .map((d, id) => ({
+                district: id,
+                total: _.sumBy(d, (i) => Number(i['Number']))
+              })).value()
+
+            let mapValues = districtValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
+
+            const extent = d3.extent(_.values(mapValues));
+            const reds = d3.scaleLinear(extent, [0.3, 0.8])
+            const col = (x) => d3.interpolateReds(reds(x))
+            for (const [district, polygon] of Object.entries(polygons)) {
+              const num_acc = parseInt(mapValues[district])
+              polygon.bindPopup(`District ${district} : ${num_acc}`)
+              let s = col(num_acc)
+              polygon.setStyle({
+                fillColor: s,
+                fillOpacity: 0.5,
+                opacity: 0.6,
+                color: s
+              })
+          }
+        }
+
+        setFeature('../data/population.csv')
+          /*f().then(polygons => {
+            d3.csv('../data/accidents_2017.csv').then(data => {
+              let accidents_2017 = _.countBy(data, x => x['DistrictName'])
+              const extent = d3.extent(_.values(accidents_2017));
+              const reds = d3.scaleLinear(extent, [0.3, 0.8])
+              const col = (x) => d3.interpolateReds(reds(x))
+              for (const [district, polygon] of Object.entries(polygons)) {
+                const num_acc = parseInt(accidents_2017[district])
+                polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
+                let s = col(num_acc)
+                polygon.setStyle({
+                  fillColor: s,
+                  fillOpacity: 0.5,
+                  opacity: 0.6,
+                  color: s
+                })
+              }
+              //polygon.bindPopup(String(b[name]))
+              //polygon.on('click', () => alert(`You clicked on ${name}`)
+            });
 
 
-</script>
+          });*/
+        </script>
 
 
       </div>
       <div class="container">
-        <div>
-          <div class="dropdown container d-flex justify-content-center m-3">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select another feature
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
+        <div class="d-flex justify-content-center">
+          <select class="form-select form-select-sm mx-auto mt-3" aria-label="Default select example">
+            <option selected value="../data/population.csv">Population</option>
+            <option value="../data/births.csv">Birth</option>
+            <option value="../data/deaths.csv">Death</option>
+            <option value="../data/unemployment.csv">Unemployment</option>
+          </select>
         </div>
       </div>
     </div>
@@ -193,17 +225,18 @@ f().then(polygons => {
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="./index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="../index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
   </script>
-  <script src="./index_files/popper.min.js"></script>
-  <script src="./index_files/bootstrap.min.js"></script>
+  <script src="../index_files/popper.min.js"></script>
+  <script src="../index_files/bootstrap.min.js"></script>
 
 
   <script>
-
-
+    $('select').on('change', function(e) {
+      setFeature(this.value)
+    });
   </script>
 </body>
 

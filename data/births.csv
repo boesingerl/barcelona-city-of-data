@@ -1,4 +1,4 @@
-"Year","District Code","District Name","Neighborhood Code","Neighborhood Name","Gender","Number"
+"Year","District.Code","District.Name","Neighborhood.Code","Neighborhood.Name","Gender","Number"
 "2017","1","Ciutat Vella","1","el Raval","Boys",283
 "2017","1","Ciutat Vella","2","el Barri Gòtic","Boys",56
 "2017","1","Ciutat Vella","3","la Barceloneta","Boys",51

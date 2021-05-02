@@ -88,8 +88,13 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container d-flex justify-content-center pb-5">
+      <div>
         <h1>Overall and Per-District statistics </h1>
+        <h3>Click on a district to see statistics about it ! </h3>
       </div>
+      </div>
+      
+
       <div class="container d-flex justify-content-center">
         <div id="mapid" style="width: 600px; height: 400px;"></div>
         <script>
@@ -143,151 +148,11 @@
             return polygons;
           };
           f().then(polygons => {
-            d3.csv('./data/accidents_2017.csv').then(data => {
-              let accidents_2017 = _.countBy(data, x => x['DistrictName'])
-              const extent = d3.extent(_.values(accidents_2017));
-              const reds = d3.scaleLinear(extent, [0.3, 0.8])
-              const col = (x) => d3.interpolateReds(reds(x))
-              for (const [district, polygon] of Object.entries(polygons)) {
-                const num_acc = parseInt(accidents_2017[district])
-                polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
-                polygon.on('click', () => update(district))
-                let s = col(num_acc)
-                polygon.setStyle({
-                  fillColor: s,
-                  fillOpacity: 0.5,
-                  opacity: 0.6,
-                  color: s
-                })
-              }
-              //polygon.bindPopup(String(b[name]))
-              //polygon.on('click', () => alert(`You clicked on ${name}`)
-            });
+            for (const [district, polygon] of Object.entries(polygons)) {
+              polygon.on('click', () => update(district))
+            }
+          })
 
-
-          });
-
-          var pop_data = null
-          var pop_data_district = null
-          var margin = {
-              top: 30,
-              right: 30,
-              bottom: 70,
-              left: 60
-            },
-            width = 300 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
-
-          d3.csv('./data/population.csv').then(data => {
-            let per_district_pop = _(data)
-              .groupBy(i => [i['Year'], i['District.Name']])
-              .map((d, id) => ({
-                year: id.split(',')[0],
-                name: id.split(',')[1],
-                total: _.sumBy(d, i => Number(i.Number))
-              })).value()
-
-            let total_pop = _(per_district_pop).groupBy('year').map((d, id) => ({
-              year: id,
-              total: _.sumBy(d, 'total')
-            })).value()
-
-            pop_data = total_pop
-            pop_data_district = per_district_pop
-
-            // set the dimensions and margins of the graph
-
-
-            // append the svg object to the body of the page
-            let svg = d3.select("#graph1")
-              .append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr('id', 'gpop')
-              .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
-
-
-              // X axis
-              var x = d3.scaleBand()
-                .range([0, width])
-                .domain(total_pop.map(function(d) {
-                  return d.year;
-                }))
-                .padding(0.2);
-
-              svg.append("g").attr("class", "axisx")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x))
-                .selectAll("text")
-                .attr("transform", "translate(-10,0)rotate(-45)")
-                .style("text-anchor", "end");
-
-              // Add Y axis
-              var y = d3.scaleLinear()
-                .domain([0.95*d3.min(total_pop.map((d) => d.total)),d3.max(total_pop.map((d) => d.total))])
-                .range([height, 0]);
-
-              svg.append("g").attr("class", "axisy")
-                .call(d3.axisLeft(y));
-
-              // Bars
-              svg.append('g').attr("id", "rects").selectAll("mybar")
-                .data(total_pop)
-                .enter()
-                .append("rect")
-                .attr("x", function(d) {
-                  return x(d.year);
-                })
-                .attr("y", function(d) {
-                  return y(d.total);
-                })
-                .attr("width", x.bandwidth())
-                .attr("height", function(d) {
-                  return height - y(d.total);
-                })
-                .attr("fill", "#69b3a2")
-
-            })
-          function update(district){
-
-            d3.select('#selectionText').text(`Currently showing : ${district}`)
-            let filtered_dat = _.filter(pop_data_district, (d) => d.name == district)
-
-            var x = d3.scaleBand()
-              .range([0, width])
-              .domain(filtered_dat.map(function(d) {
-                return d.year;
-              }))
-              .padding(0.2);
-
-            var y = d3.scaleLinear()
-              .domain([0.95*d3.min(filtered_dat.map((d) => d.total)),d3.max(filtered_dat.map((d) => d.total))])
-              .range([height, 0]);
-
-            d3.select(".axisx").transition().duration(500).call(d3.axisBottom(x))
-            d3.select(".axisy").transition().duration(500).call(d3.axisLeft(y))
-
-            let rects = d3.select('#rects').selectAll("rect")
-              .data(filtered_dat)
-
-
-
-            rects.enter()
-            .append('rect')
-
-            rects.transition()
-            .duration(500)
-            .attr("y", function(d) {
-              return y(d.total);
-            })
-            .attr("height", function(d) {
-              return height - y(d.total);
-            })
-
-            rects.exit().remove()
-          }
         </script>
       </div>
       <div class="container d-flex justify-content-center mt-5">
@@ -315,47 +180,35 @@
       </div>
 
       <div class="row">
-        <div>
-          <h2>Population over time</h2>
-          <div class="col-md-4" id="graph1">
+        <div class="col-sm">
+          <h5 class="text-center">Population over time</h5>
+          <div id="graphPop"></div>
         </div>
-
+        <div class="col-sm">
+          <h5 class="text-center">Births over time</h5>
+          <div id="graphBirth"></div>
         </div>
-        <div class="col-md-4">
-          <h2>Heading2</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading3</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+        <div class="col-sm">
+          <h5 class="text-center">Deaths over time</h5>
+          <div id="graphDeath"></div>
         </div>
       </div>
+
       <div class="row">
-        <div class="col-md-4">
-          <h2>Heading4</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+        <div class="col-sm">
+          <h5 class="text-center">Unemployment over time</h5>
+          <div id="graphUnemployment"></div>
         </div>
-        <div class="col-md-4">
-          <h2>Heading5</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+        <div class="col-sm">
+          <h5 class="text-center">Immigrants over time</h5>
+          <div id="graphImmigrants"></div>
         </div>
-        <div class="col-md-4">
-          <h2>Heading6</h2>
-          <svg width="200" height="100">
-            <rect width="200" height="100" style="fill:rgb(0,0,127);stroke-width:1;stroke:rgb(0,0,0)" />
-          </svg>
+        <div class="col-sm">
+          <h5 class="text-center">Population per gender</h5>
+          <div id="graphPopGender"></div>
         </div>
       </div>
 
-      <hr>
 
     </div> <!-- /container -->
 
@@ -376,12 +229,49 @@
   </script>
   <script src="./index_files/popper.min.js"></script>
   <script src="./index_files/bootstrap.min.js"></script>
-
-
+  <script src="./graph.js"></script>
   <script>
+    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
 
+    function getNewColor() {
+      let i = -1
+      return () => {
+        i += 1;
+        return colors[i % 10]
+      }
+    }
 
+    let changingColor = getNewColor()
+
+    const graphPop = new HistGraph("data/population.csv", "graphPop", {
+      "color": changingColor()
+    })
+    const graphBirth = new HistGraph("data/births.csv", "graphBirth", {
+      "color": changingColor()
+    })
+    const graphDeath = new HistGraph("data/deaths.csv", "graphDeath", {
+      "color": changingColor()
+    })
+
+    const graphUnemployment = new HistGraph("data/unemployment.csv", "graphUnemployment", {
+      "color": changingColor()
+    })
+    const graphImmigrants = new HistGraph("data/immigrants_by_nationality.csv", "graphImmigrants", {
+      "color": changingColor()
+    })
+    const graphPopGender = new HistGraph("data/population.csv", "graphPopGender", {
+      "yearFeature": "Gender",
+      "color": changingColor()
+    })
+
+    const allGraphs = [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender]
+
+    function update(district) {
+      d3.select('#selectionText').text(`Currently showing ${district}`)
+      allGraphs.map(x => x.update(district))
+    }
   </script>
+
 </body>
 
 </html>
