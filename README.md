@@ -6,7 +6,7 @@
 | Marc Egli | 283231 |
 | Léopaul Boesinger | 288715 |
 
-[Milestone 1](milestones/milestone1/Milestone1.pdf) • [Milestone 2](#milestone-2) • [Milestone 3](#milestone-3)
+[Milestone 1](milestones/milestone1/Milestone1.pdf) • [Milestone 2](milestones/milestone2/Milestone2.pdf) • [Milestone 3](#milestone-3)
 
 ## Milestone 1 (23rd April, 5pm)
 
@@ -32,6 +32,7 @@ Please, fill the following sections about your project.
 ### Exploratory Data Analysis
 
 > Pre-processing of the data set you chose
+>
 > - Show some basic statistics and get insights about the data
 
 ### Related work
