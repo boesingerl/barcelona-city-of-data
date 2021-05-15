@@ -12,6 +12,7 @@
   <title>Project Zozo</title>
 
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <!-- Bootstrap core CSS -->
   <link href="./index_files/bootstrap.min.css" rel="stylesheet">
 
@@ -181,6 +182,12 @@
     border-radius:10px;
   }
 
+  .mytooltip {
+  box-shadow: none;
+  background: transparent;
+  border: 0px
+}
+
 </style>
 
 <script>
@@ -280,7 +287,7 @@
       <div class="container d-flex justify-content-center">
         <div class="intro">
           <div class="popout-video">
-            <div id="mapid" style="width: 600px; height: 400px;"></div>
+            <div id="mapid" style="width:600px; height:400px"></div>
           </div>
         </div>
 
@@ -334,35 +341,35 @@
             }
             return polygons;
           };
-          f().then(polygons => {
+
+          var poly = f()
+
+          poly.then(polygons => {
             for (const [district, polygon] of Object.entries(polygons)) {
               polygon.on('click', () => update(district))
+              polygon.bindTooltip(district, {permanent:false, direction:"center"});
             }
           })
+
         </script>
       </div>
-      <div class="container d-flex justify-content-center mt-5">
-        <div>
-          <input type="text" id="slider" class="slider">
-          <script>
-            var mySlider = new rSlider({
-              target: '#slider',
-              values: [2008, 2009, 2010, 2011, 2012, 2013],
-              width: 500,
-              range: true // range slider
-            });
-          </script>
-        </div>
-
-
-      </div>
-
     </div>
 
+    
+    
+
     <div id='graphContainer' class="container">
+      
       <!-- Example row of columns -->
       <div class="container d-flex justify-content-center p-5">
         <h1 id='selectionText'>Currently showing : Overall</h1>
+      </div>
+
+      <div class="d-flex justify-content-center p-4">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Y-axis starting from zero</label>
+        </div>
       </div>
 
       <div class="row">
@@ -392,6 +399,21 @@
         <div class="col-sm">
           <h5 class="text-center">Population per gender</h5>
           <div id="graphPopGender"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <h5 class="text-center">Population age</h5>
+          <div id="graphPopAge"></div>
+        </div>
+        <div class="col-sm">
+          <h5 class="text-center">Death age</h5>
+          <div id="graphDeathAge"></div>
+        </div>
+        <div class="col-sm">
+          <h5 class="text-center">Immigrants by age</h5>
+          <div id="graphImmigrantAge"></div>
         </div>
       </div>
 
@@ -428,7 +450,7 @@
     }
 
     let changingColor = getNewColor()
-
+    
     const graphPop = new HistGraph("data/population.csv", "graphPop", {
       "color": changingColor()
     })
@@ -450,13 +472,42 @@
       "color": changingColor()
     })
 
-    const allGraphs = [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender]
+    const graphPopAge = new HistGraph("data/population.csv", "graphPopAge", {
+      "yearFeature": "Age",
+      "color": changingColor()
+    })
+    const graphDeathAge = new HistGraph("data/deaths.csv", "graphDeathAge", {
+      "yearFeature": "Age",
+      "color": changingColor()
+    })
+    
+    const graphImmigrantAge = new HistGraph("data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
+      "yearFeature": "Age",
+      "color": changingColor(),
+      "mainFeature":"Immigrants"
+    })
 
+    const allGraphs = [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender, graphPopAge, graphDeathAge, graphImmigrantAge]
+    
     function update(district) {
       d3.select('#selectionText').text(`Currently showing ${district}`)
       allGraphs.map(x => x.update(district))
+      poly.then(pol => {
+        
+        Object.values(pol).forEach(p => p.setStyle({fillColor:'#3388ff'}))
+        
+        pol[district].setStyle({
+        fillColor: "aquamarine"
+      })})
     }
+
+    $('#flexSwitchCheckDefault').change(function() {
+      allGraphs.map(x => x.updateYAxis(this.checked)) 
+    });
+
   </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
 </body>
 
