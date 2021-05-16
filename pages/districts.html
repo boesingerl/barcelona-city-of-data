@@ -129,9 +129,13 @@
 
 
   let load_poly = async (name,filename, polygons) => {
-      let [coords, population] =  await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => [json['geometry'],json['extratags']['population']] )
+      let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
+                .then(res => res.json())
+                .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
+
       let polygon = L.geoJSON(coords).addTo(mymap);
-      polygons[name] = {polygon:polygon, population:population};
+      
+      polygons[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   }
 
 
@@ -151,6 +155,9 @@ f().then(polygons => {
         const i = selector()
         d3.select("#name" + i).text(district)
         d3.select("#pop" + i).text(obj['population'])
+        d3.select("#dens" + i).text(obj['density'])
+        d3.select("#neigh" + i).text(obj['neighborhoods'].length)
+        d3.select("#area" + i).text(obj['area'])
       })
     }
 
@@ -182,7 +189,7 @@ f().then(polygons => {
     </thead>
     <tbody>
       <tr>
-        <th scope="row">Area</th>
+        <th scope="row">Area (km2)</th>
         <td id='area0'>0</td>
         <td id='area1'>0</td>
 
@@ -192,6 +199,11 @@ f().then(polygons => {
         <td id='pop0'>0</td>
         <td id='pop1'>0</td>
 
+      </tr>
+      <tr>
+        <th scope="row">Density (inhabitants/km2)</th>
+        <td id='dens0'>0</td>
+        <td id='dens1'>0</td>
       </tr>
       <tr>
         <th scope="row"># Neighborhoods</th>
@@ -204,9 +216,15 @@ f().then(polygons => {
 </div>
 
       </div>
+      <div class="mt-4">
+        <h4 class="text-center">
+          Data from https://en.wikipedia.org/wiki/Districts_of_Barcelona
+        </h4>
+      </div>
     </div>
 
     <div class="container">
+      
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">

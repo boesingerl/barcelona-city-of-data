@@ -15,6 +15,8 @@ class HistGraph {
     this.height  = height_ - margin.top - margin.bottom;
     this.dataset = d3.csv(datapath)
 
+    this.currentData = null
+
     this.districtFeature = districtFeature
     this.yearFeature     = yearFeature
     this.mainFeature     = mainFeature
@@ -23,7 +25,9 @@ class HistGraph {
                 .then(([districtD, totalD]) => {
                   this.perDistrictData = districtD
                   this.totalData = totalD
-                  this.createGraph(totalD)})
+                  this.createGraph(totalD)
+                  this.currentData = totalD
+                })
 
   }
 
@@ -103,10 +107,46 @@ class HistGraph {
       .attr("fill", this.color)
   }
 
+  updateYAxis(startingFromZero, transitionDuration = 500){
+
+    let y = null
+
+    if(startingFromZero){
+      y = d3.scaleLinear()
+      .domain([0, d3.max(this.currentData.map((d) => d.total))])
+      .range([this.height, 0]);
+    }else{
+      y = d3.scaleLinear()
+      .domain([0.95 * d3.min(this.currentData.map((d) => d.total)), d3.max(this.currentData.map((d) => d.total))])
+      .range([this.height, 0]);
+    }
+    
+    d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y))
+
+    let rects = d3.select('#' + this.rectId).selectAll("rect")
+      .data(this.currentData)
+
+    rects.enter()
+      .append('rect')
+
+    rects.transition()
+      .duration(transitionDuration)
+      .attr("y", function(d) {
+        return y(d.total);
+      })
+      .attr("height", (d) => {
+        return this.height - y(d.total);
+      })
+
+    rects.exit().remove()
+
+  }
 
   update(district, transitionDuration = 500) {
 
     let filtered_dat = _.filter(this.perDistrictData, (d) => d.name == district)
+    
+    this.currentData = filtered_dat
 
     let x = d3.scaleBand()
       .range([0, this.width])
