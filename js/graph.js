@@ -107,7 +107,7 @@ class HistGraph {
       .attr("fill", this.color)
   }
 
-  updateYAxis(startingFromZero, transitionDuration = 500){
+  updateYAxis(startingFromZero, transitionDuration = 700){
 
     let y = null
 
@@ -120,7 +120,7 @@ class HistGraph {
       .domain([0.95 * d3.min(this.currentData.map((d) => d.total)), d3.max(this.currentData.map((d) => d.total))])
       .range([this.height, 0]);
     }
-    
+
     d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y))
 
     let rects = d3.select('#' + this.rectId).selectAll("rect")
@@ -142,10 +142,10 @@ class HistGraph {
 
   }
 
-  update(district, transitionDuration = 500) {
+  update(district, callBack = () => {}, transitionDuration = 500) {
 
     let filtered_dat = _.filter(this.perDistrictData, (d) => d.name == district)
-    
+
     this.currentData = filtered_dat
 
     let x = d3.scaleBand()
@@ -159,7 +159,7 @@ class HistGraph {
       .domain([0.95 * d3.min(filtered_dat.map((d) => d.total)), d3.max(filtered_dat.map((d) => d.total))])
       .range([this.height, 0]);
 
-    d3.select("#" + this.graphId).select(".axisx").transition().duration(transitionDuration).call(d3.axisBottom(x))
+    d3.select("#" + this.graphId).select(".axisx").transition().duration(transitionDuration).call(d3.axisBottom(x)).on('end', callBack)
     d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y))
 
     let rects = d3.select('#' + this.rectId).selectAll("rect")

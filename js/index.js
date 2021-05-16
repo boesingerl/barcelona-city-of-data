@@ -219,7 +219,11 @@ const allGraphs = load_graphs()
 // Call update function of bargraph, update text, and color on district selection
 function update(district) {
   d3.select('#selectionText').text(`Currently showing ${district}`)
-  allGraphs.then(graphs => graphs.map(x => x.update(district)))
+  allGraphs.then(graphs => graphs.map(x => x.update(district, () => {
+    if($('#flexSwitchCheckDefault').is(':checked')){
+      allGraphs.then(graphs => graphs.map(x => x.updateYAxis(true)))
+    }
+  })))
   poly.then(pol => {
 
     Object.values(pol).forEach(p => p.setStyle({fillColor:'#7CC6FE', weight:2}))
@@ -228,6 +232,7 @@ function update(district) {
     fillColor: "#8789C0",
     weight:3
   })})
+
 }
 
 // Update y axis of bar graphs on switch
