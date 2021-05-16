@@ -13,41 +13,14 @@
   <title>Project Zozo</title>
 
 
-  <!-- Bootstrap core CSS -->
-  <link href="../index_files/bootstrap.min.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/jumbotron.css" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="../index_files/jumbotron.css" rel="stylesheet">
-  <script src="../index_files/lodash.js"></script>
-  <script src="../index_files/d3.js"></script>
+  <!-- JS -->
+  <script src="../js/lodash.js"></script>
+  <script src="../js/d3.js"></script>
 
-  <script data-dapp-detection="">
-    (function() {
-      let e = !1;
-
-      function n() {
-        if (!e) {
-          const n = document.createElement("meta");
-          n.name = "dapp-detected", document.head.appendChild(n), e = !0
-        }
-      }
-      if (window.hasOwnProperty("ethereum")) {
-        if (window.__disableDappDetectionInsertion = !0, void 0 === window.ethereum) return;
-        n()
-      } else {
-        var t = window.ethereum;
-        Object.defineProperty(window, "ethereum", {
-          configurable: !0,
-          set: function(e) {
-            window.__disableDappDetectionInsertion || n(), t = e
-          },
-          get: function() {
-            return window.__disableDappDetectionInsertion || n(), t
-          }
-        })
-      }
-    })();
-  </script>
 </head>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
@@ -89,131 +62,47 @@
       <div class="container d-flex justify-content-center pb-5">
         <h1> District comparison </h1>
       </div>
-      <div class="container d-flex justify-content-center">
+      <div class="container d-flex">
         <div>
-        <div id="mapid" style="width: 600px; height: 400px;"></div>
+          <div id="mapid" style="width: 600px; height: 400px;"></div>
 
-<script>
+        </div>
+        <div class="justify-content-center pl-5">
+          <table class="table w-100">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col w-50">Category</th>
+                <th scope="col w-50" id='name0'>District 1</th>
+                <th scope="col w-50" id='name1'>District 2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Area (km2)</th>
+                <td id='area0'>0</td>
+                <td id='area1'>0</td>
 
-  var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
-	var mymap = L.map('mapid',{
-    maxBounds: bounds
-  }).setView([41.37,2.1592], 11);
+              </tr>
+              <tr>
+                <th scope="row">Population</th>
+                <td id='pop0'>0</td>
+                <td id='pop1'>0</td>
 
-	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-    minZoom: 11,
-		id: 'mapbox/light-v10',
-		tileSize: 512,
-		zoomOffset: -1
-	}).addTo(mymap);
+              </tr>
+              <tr>
+                <th scope="row">Density (inhabitants/km2)</th>
+                <td id='dens0'>0</td>
+                <td id='dens1'>0</td>
+              </tr>
+              <tr>
+                <th scope="row"># Neighborhoods</th>
+                <td id='neigh0'>0</td>
+                <td id='neigh1'>0</td>
 
-  let districts = {
-  'Nou Barris': 'nou-barris.json',
-  'Eixample': 'eixample.json',
-  'Ciutat Vella': 'ciutat-vella.json',
-  'Gràcia': 'gracia.json',
-  'Sant Martí': 'sant-marti.json',
-  'Sant Andreu': 'sant-andreu.json',
-  'Les Corts': 'les-corts.json',
-  'Horta-Guinardó': 'horta-guinardo.json',
-  'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-  'Sants-Montjuïc': 'sants-montjuic.json',
-  }
-
-  mymap.on('drag', function() {
-    mymap.panInsideBounds(bounds, {animate: false});
-  });
-
-  mymap.getRenderer(mymap).options.padding = 0.5;
-
-
-  let load_poly = async (name,filename, polygons) => {
-      let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
-                .then(res => res.json())
-                .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
-
-      let polygon = L.geoJSON(coords).addTo(mymap);
-      
-      polygons[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
-  }
-
-
-let f = async function() {
-  let polygons = {};
-  for (const [name, filename] of Object.entries(districts)) {
-      await load_poly(name,filename,polygons);
-  }
-  return polygons;
-};
-f().then(polygons => {
-
-    let selector = onClick()
-
-    for (const [district, obj] of Object.entries(polygons)) {
-      obj['polygon'].on('click', () => {
-        const i = selector()
-        d3.select("#name" + i).text(district)
-        d3.select("#pop" + i).text(obj['population'])
-        d3.select("#dens" + i).text(obj['density'])
-        d3.select("#neigh" + i).text(obj['neighborhoods'].length)
-        d3.select("#area" + i).text(obj['area'])
-      })
-    }
-
-    function onClick(){
-      let i = -1
-      return () => {
-        i = (i+1)%2
-        return i
-      }
-    }
-        //polygon.bindPopup(String(b[name]))
-        //polygon.on('click', () => alert(`You clicked on ${name}`)
-  });
-
-
-
-
-
-</script>
-</div>
-<div class="justify-content-center pl-5">
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Category</th>
-        <th scope="col" id='name0'>District 1</th>
-        <th scope="col" id='name1'>District 2</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">Area (km2)</th>
-        <td id='area0'>0</td>
-        <td id='area1'>0</td>
-
-      </tr>
-      <tr>
-        <th scope="row">Population</th>
-        <td id='pop0'>0</td>
-        <td id='pop1'>0</td>
-
-      </tr>
-      <tr>
-        <th scope="row">Density (inhabitants/km2)</th>
-        <td id='dens0'>0</td>
-        <td id='dens1'>0</td>
-      </tr>
-      <tr>
-        <th scope="row"># Neighborhoods</th>
-        <td id='neigh0'>0</td>
-        <td id='neigh1'>0</td>
-
-      </tr>
-    </tbody>
-  </table>
-</div>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
       </div>
       <div class="mt-4">
@@ -224,18 +113,18 @@ f().then(polygons => {
     </div>
 
     <div class="container">
-      
+
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
           <h2>Graph1</h2>
-          </div>
+        </div>
         <div class="col-md-4">
           <h2>Graph2</h2>
         </div>
         <div class="col-md-4">
           <h2>Graph3</h2>
-          </div>
+        </div>
       </div>
 
       <hr>
@@ -251,18 +140,13 @@ f().then(polygons => {
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="../index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="../js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
   </script>
-  <script src="../index_files/popper.min.js"></script>
-  <script src="../index_files/bootstrap.min.js"></script>
-
-
-  <script>
-
-
-  </script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/districts.js"></script>
 </body>
 
 </html>

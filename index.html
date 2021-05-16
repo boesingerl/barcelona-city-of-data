@@ -11,238 +11,16 @@
 
   <title>Project Zozo</title>
 
-
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-  <!-- Bootstrap core CSS -->
-  <link href="./index_files/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/jumbotron.css" rel="stylesheet">
+  <link rel="stylesheet", href="./css/index.css" />
 
-  <!-- Custom styles for this template -->
-  <link href="./index_files/jumbotron.css" rel="stylesheet">
-  <script src="./index_files/lodash.js"></script>
-  <script src="./index_files/d3.js"></script>
 
-  <script data-dapp-detection="">
-    (function() {
-      let e = !1;
-
-      function n() {
-        if (!e) {
-          const n = document.createElement("meta");
-          n.name = "dapp-detected", document.head.appendChild(n), e = !0
-        }
-      }
-      if (window.hasOwnProperty("ethereum")) {
-        if (window.__disableDappDetectionInsertion = !0, void 0 === window.ethereum) return;
-        n()
-      } else {
-        var t = window.ethereum;
-        Object.defineProperty(window, "ethereum", {
-          configurable: !0,
-          set: function(e) {
-            window.__disableDappDetectionInsertion || n(), t = e
-          },
-          get: function() {
-            return window.__disableDappDetectionInsertion || n(), t
-          }
-        })
-      }
-    })();
-  </script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-  <link rel="stylesheet" href="index_files/rSlider.min.css">
-  <script src="index_files/rSlider.min.js"></script>
 </head>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 
-<style>
-  .popout-video {
-    width: 50%;
-    position: relative;
-  }
-
-  .popout-video--popout {
-    border-radius: 25px;
-    position: fixed;
-    left: 0;
-    top: 100;
-    width: 200px;
-    max-width: 50%;
-    height: auto;
-    -webkit-animation: popin 0.5s ease-in-out forwards;
-    animation: popin 0.5s ease-in-out forwards;
-  }
-
-  @-webkit-keyframes popin {
-    to {
-      top: 30%;
-    }
-  }
-
-  @keyframes popin {
-    to {
-      top: 30%;
-    }
-  }
-
-  .popout-video--popout:hover .popout-video__controls {
-    opacity: 1;
-  }
-
-  .popout-video video {
-    width: 50%;
-    vertical-align: middle;
-  }
-
-  .popout-video__controls {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 0.5rem;
-    background: black;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, black 100%);
-    z-index: 1;
-    display: flex;
-    justify-content: flex-end;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-  }
-
-  .popout-video__controls .close-video {
-    width: 1.77rem;
-    height: 1.7rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: all;
-    border-radius: 50%;
-    transition: background 0.25s ease;
-  }
-
-  .popout-video__controls .close-video:hover {
-    background: rgba(50, 50, 50, 0.4);
-  }
-
-  .popout-video__controls .close-video:before,
-  .popout-video__controls .close-video:after {
-    content: "";
-    position: absolute;
-    margin: auto;
-    width: 1rem;
-    height: 2px;
-    background: #fff;
-  }
-
-  .popout-video__controls .close-video:before {
-    transform: rotate(45deg);
-  }
-
-  .popout-video__controls .close-video:after {
-    transform: rotate(-45deg);
-  }
-
-  .mapleftmargin {
-    position: relative;
-    left: 0;
-    top: 100;
-    -webkit-animation: poping 0.5s ease-in-out forwards;
-
-  }
-
-  .mapleftmarginundo {
-    position: relative;
-    left: 0;
-    top: 100;
-    -webkit-animation: popingup 0.5s ease-in-out forwards;
-
-  }
-
-  @-webkit-keyframes poping {
-    from{
-      left:0px
-    }
-    to {
-      left: 300px;
-    }
-  }
-
-  @-webkit-keyframes popingup {
-    from{
-      left:300px
-    }
-    to {
-      left: 0px;
-    }
-  }
-
-
-  #mapid{
-    border-radius:10px;
-  }
-
-  .mytooltip {
-  box-shadow: none;
-  background: transparent;
-  border: 0px
-}
-
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const introContainer = document.querySelector('.intro');
-    const videoContainer = document.querySelector('.popout-video');
-    const video = videoContainer.querySelector('#mapid');
-    const graphContainer = document.querySelector('#graphContainer')
-    let videoHeight = videoContainer.offsetHeight;
-
-    const closeVideoBtn = document.querySelector('.close-video');
-
-    let popOut = true;
-    let ignoreThis = true;
-
-    introContainer.style.height = `${videoHeight}px`;
-    //graphContainer.classList.add('mapleftmargin');
-
-    window.addEventListener('scroll', function(e) {
-      if (window.scrollY > videoHeight + 200) {
-        // only pop out the video if it wasnt closed before
-        if (popOut) {
-          console.log('moving')
-          graphContainer.classList.remove('mapleftmarginundo');
-          graphContainer.classList.add('mapleftmargin');
-
-          videoContainer.classList.add('popout-video--popout');
-          // set video container off the screen for the slide in animation
-          videoContainer.style.top = `-${videoHeight}px`;
-          ignoreThis = false;
-        }
-      } else {
-        graphContainer.classList.remove('mapleftmargin');
-        if(!ignoreThis){
-          graphContainer.classList.add('mapleftmarginundo');
-        }
-        videoContainer.classList.remove('popout-video--popout');
-        videoContainer.style.top = `0px`;
-        popOut = true;
-      }
-    });
-
-    // close the video and prevent from opening again on scrolling + pause the video
-    /*closeVideoBtn.addEventListener('click', function() {
-    	videoContainer.classList.remove('popout-video--popout');
-    	video.pause();
-    	popOut = false;
-    });*/
-
-    window.addEventListener('resize', function() {
-      videoHeight = videoContainer.offsetHeight;
-      introContainer.style.height = `${videoHeight}px`;
-    });
-  });
-</script>
 
 <body>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -290,76 +68,14 @@
             <div id="mapid" style="width:600px; height:400px"></div>
           </div>
         </div>
-
-        <script>
-          var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-          var mymap = L.map('mapid', {
-            maxBounds: bounds
-          }).setView([41.37, 2.1592], 11);
-
-          L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
-            minZoom: 11,
-            id: 'mapbox/light-v10',
-            tileSize: 512,
-            zoomOffset: -1
-          }).addTo(mymap);
-
-          let districts = {
-            'Nou Barris': 'nou-barris.json',
-            'Eixample': 'eixample.json',
-            'Ciutat Vella': 'ciutat-vella.json',
-            'Gràcia': 'gracia.json',
-            'Sant Martí': 'sant-marti.json',
-            'Sant Andreu': 'sant-andreu.json',
-            'Les Corts': 'les-corts.json',
-            'Horta-Guinardó': 'horta-guinardo.json',
-            'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-            'Sants-Montjuïc': 'sants-montjuic.json',
-          }
-
-          mymap.on('drag', function() {
-            mymap.panInsideBounds(bounds, {
-              animate: false
-            });
-          });
-
-          mymap.getRenderer(mymap).options.padding = 0.5;
-
-
-          let load_poly = async (name, filename, polygons) => {
-            let coords = await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-            let polygon = L.geoJSON(coords).addTo(mymap);
-            polygons[name] = polygon;
-          }
-
-
-          let f = async function() {
-            let polygons = {};
-            for (const [name, filename] of Object.entries(districts)) {
-              await load_poly(name, filename, polygons);
-            }
-            return polygons;
-          };
-
-          var poly = f()
-
-          poly.then(polygons => {
-            for (const [district, polygon] of Object.entries(polygons)) {
-              polygon.on('click', () => update(district))
-              polygon.bindTooltip(district, {permanent:false, direction:"center"});
-            }
-          })
-
-        </script>
       </div>
     </div>
 
-    
-    
+
+
 
     <div id='graphContainer' class="container">
-      
+
       <!-- Example row of columns -->
       <div class="container d-flex justify-content-center p-5">
         <h1 id='selectionText'>Currently showing : Overall</h1>
@@ -416,8 +132,6 @@
           <div id="graphImmigrantAge"></div>
         </div>
       </div>
-
-
     </div> <!-- /container -->
 
 
@@ -428,86 +142,22 @@
     <p>© Project Zozo 2021</p>
   </footer>
 
-  <!-- Bootstrap core JavaScript
-    ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="./index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <!-- Custom JS -->
+  <script src="./js/lodash.js"></script>
+  <script src="./js/d3.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+  <script src="./js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
   </script>
-  <script src="./index_files/popper.min.js"></script>
-  <script src="./index_files/bootstrap.min.js"></script>
-  <script src="./graph.js"></script>
-  <script>
-    const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
+  <script src="./js/popper.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+  <script src="./js/graph.js"></script>
+  <script src="./js/index.js"></script>
 
-    function getNewColor() {
-      let i = -1
-      return () => {
-        i += 1;
-        return colors[i % 10]
-      }
-    }
 
-    let changingColor = getNewColor()
-    
-    const graphPop = new HistGraph("data/population.csv", "graphPop", {
-      "color": changingColor()
-    })
-    const graphBirth = new HistGraph("data/births.csv", "graphBirth", {
-      "color": changingColor()
-    })
-    const graphDeath = new HistGraph("data/deaths.csv", "graphDeath", {
-      "color": changingColor()
-    })
-
-    const graphUnemployment = new HistGraph("data/unemployment.csv", "graphUnemployment", {
-      "color": changingColor()
-    })
-    const graphImmigrants = new HistGraph("data/immigrants_by_nationality.csv", "graphImmigrants", {
-      "color": changingColor()
-    })
-    const graphPopGender = new HistGraph("data/population.csv", "graphPopGender", {
-      "yearFeature": "Gender",
-      "color": changingColor()
-    })
-
-    const graphPopAge = new HistGraph("data/population.csv", "graphPopAge", {
-      "yearFeature": "Age",
-      "color": changingColor()
-    })
-    const graphDeathAge = new HistGraph("data/deaths.csv", "graphDeathAge", {
-      "yearFeature": "Age",
-      "color": changingColor()
-    })
-    
-    const graphImmigrantAge = new HistGraph("data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
-      "yearFeature": "Age",
-      "color": changingColor(),
-      "mainFeature":"Immigrants"
-    })
-
-    const allGraphs = [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender, graphPopAge, graphDeathAge, graphImmigrantAge]
-    
-    function update(district) {
-      d3.select('#selectionText').text(`Currently showing ${district}`)
-      allGraphs.map(x => x.update(district))
-      poly.then(pol => {
-        
-        Object.values(pol).forEach(p => p.setStyle({fillColor:'#3388ff'}))
-        
-        pol[district].setStyle({
-        fillColor: "aquamarine"
-      })})
-    }
-
-    $('#flexSwitchCheckDefault').change(function() {
-      allGraphs.map(x => x.updateYAxis(this.checked)) 
-    });
-
-  </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
 </body>
 

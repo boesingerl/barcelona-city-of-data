@@ -13,44 +13,17 @@
   <title>Project Zozo</title>
 
 
-  <!-- Bootstrap core CSS -->
-  <link href="../index_files/bootstrap.min.css" rel="stylesheet">
-  <link href="../index_files/choropleth.css" rel="stylesheet">
-  <!-- Custom styles for this template -->
-  <link href="../index_files/jumbotron.css" rel="stylesheet">
-  <script src="../index_files/lodash.js"></script>
-  <script src="../index_files/d3.js"></script>
+  <!-- CSS -->
+  <link href="../css/jumbotron.css" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/choropleth.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 
-  <script data-dapp-detection="">
-    (function() {
-      let e = !1;
-
-      function n() {
-        if (!e) {
-          const n = document.createElement("meta");
-          n.name = "dapp-detected", document.head.appendChild(n), e = !0
-        }
-      }
-      if (window.hasOwnProperty("ethereum")) {
-        if (window.__disableDappDetectionInsertion = !0, void 0 === window.ethereum) return;
-        n()
-      } else {
-        var t = window.ethereum;
-        Object.defineProperty(window, "ethereum", {
-          configurable: !0,
-          set: function(e) {
-            window.__disableDappDetectionInsertion || n(), t = e
-          },
-          get: function() {
-            return window.__disableDappDetectionInsertion || n(), t
-          }
-        })
-      }
-    })();
-  </script>
+  <!-- JS libs -->
+  <script src="../js/lodash.js"></script>
+  <script src="../js/d3.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 </head>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
 
 <body>
@@ -90,202 +63,7 @@
         <h1>Choropleth Map and Cartogram</h1>
       </div>
       <div class="container d-flex justify-content-center">
-
-
         <div id="mapid" style="width: 600px; height: 400px;"></div>
-        <script>
-          var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-          var mymap = L.map('mapid', {
-            maxBounds: bounds
-          }).setView([41.37, 2.1592], 11);
-
-          L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
-            minZoom: 11,
-            id: 'mapbox/light-v10',
-            tileSize: 512,
-            zoomOffset: -1
-          }).addTo(mymap);
-
-          let districts = {
-            'Nou Barris': 'nou-barris.json',
-            'Eixample': 'eixample.json',
-            'Ciutat Vella': 'ciutat-vella.json',
-            'Gràcia': 'gracia.json',
-            'Sant Martí': 'sant-marti.json',
-            'Sant Andreu': 'sant-andreu.json',
-            'Les Corts': 'les-corts.json',
-            'Horta-Guinardó': 'horta-guinardo.json',
-            'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-            'Sants-Montjuïc': 'sants-montjuic.json',
-          }
-
-          mymap.on('drag', function() {
-            mymap.panInsideBounds(bounds, {
-              animate: false
-            });
-          });
-
-
-          function highlight(e, district) {
-              var layer = e.target;
-              layer.setStyle({
-                  color: '#000',
-                  fillOpacity: 0.7
-              });
-              info.update(district)
-
-          }
-
-          var polygonValues = {}
-
-          function resetHighlight(e) {
-            var layer = e.target;
-            layer.setStyle({
-                color: layer.options['fillColor'],
-                fillOpacity: 0.5
-            });
-            info.update();
-          }
-
-          mymap.getRenderer(mymap).options.padding = 0.5;
-
-          let load_poly = async (name, filename, polygons) => {
-            let coords = await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-            let polygon = L.geoJSON(coords).addTo(mymap);
-            polygon.on({
-                mouseover: e => highlight(e,name),
-                mouseout: resetHighlight
-            });
-            polygons[name] = polygon;
-            polygonValues[name] = 0
-
-          }
-
-
-          let f = async function() {
-            let polygons = {};
-            for (const [name, filename] of Object.entries(districts)) {
-              await load_poly(name, filename, polygons);
-            }
-            return polygons;
-          };
-
-          var poly = f()
-
-          var info = L.control();
-
-          function numberWithSpaces(x) {
-              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-          }
-
-          info.onAdd = function (mymap) {
-              this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-              this.update();
-              return this._div;
-          };
-
-          // method that we will use to update the control based on feature properties passed
-          //Needs to contain the first selected element text
-          var text = "Birth"
-          info.update = function (district) {
-
-            let value = polygonValues[district];
-            this._div.innerHTML =  (district ?
-                '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + text
-                : '<b> Hover over a district </b>');
-          };
-
-          info.addTo(mymap);
-
-
-          var legend = L.control({position: 'bottomright'});
-
-          legend.onAdd = function (map) {
-
-              var div = L.DomUtil.create('div', 'info legend'),
-                  grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-                  labels = [];
-
-              // loop through our density intervals and generate a label with a colored square for each interval
-              for (var i = 0; i < grades.length; i++) {
-                  div.innerHTML +=
-                      '<i style="background:'  + '"></i> ' +
-                      grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-              }
-
-              return div;
-          };
-
-          legend.addTo(mymap)
-
-
-
-
-
-          async function setFeature(datapath){
-            let polygons = await poly
-            let data = await d3.csv(datapath)
-            //let districtValues = _.countBy(data, x => x['District.Name'])
-            let districtValues = _(data)
-              .groupBy('District.Name')
-              .map((d, id) => ({
-                district: id,
-                total: _.sumBy(d, (i) => Number(i['Number']))
-              })).value()
-
-            let mapValues = districtValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
-            console.log(mapValues);
-            const extent = d3.extent(_.values(mapValues));
-            console.log(extent);
-            const reds = d3.scaleLinear(extent, [0.3, 0.8])
-            const col = (x) => d3.interpolateReds(reds(x))
-            for (const [district, polygon] of Object.entries(polygons)) {
-              const num_acc = parseInt(mapValues[district])
-              polygonValues[district] = num_acc
-              polygon.bindPopup(`District ${district} : ${num_acc}`)
-              let s = col(num_acc)
-              polygon.setStyle({
-                fillColor: s,
-                fillOpacity: 0.5,
-                opacity: 0.6,
-                color: s
-              })
-          }
-        }
-
-
-
-
-
-
-        setFeature('../data/population.csv')
-          /*f().then(polygons => {
-            d3.csv('../data/accidents_2017.csv').then(data => {
-              let accidents_2017 = _.countBy(data, x => x['DistrictName'])
-              const extent = d3.extent(_.values(accidents_2017));
-              const reds = d3.scaleLinear(extent, [0.3, 0.8])
-              const col = (x) => d3.interpolateReds(reds(x))
-              for (const [district, polygon] of Object.entries(polygons)) {
-                const num_acc = parseInt(accidents_2017[district])
-                polygon.bindPopup(`District ${district} : ${num_acc} accidents`)
-                let s = col(num_acc)
-                polygon.setStyle({
-                  fillColor: s,
-                  fillOpacity: 0.5,
-                  opacity: 0.6,
-                  color: s
-                })
-              }
-              //polygon.bindPopup(String(b[name]))
-              //polygon.on('click', () => alert(`You clicked on ${name}`)
-            });
-
-
-          });*/
-        </script>
-
-
       </div>
       <div class="container">
         <div class="d-flex justify-content-center">
@@ -310,20 +88,14 @@
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="../index_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="../js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script>
     window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
   </script>
-  <script src="../index_files/popper.min.js"></script>
-  <script src="../index_files/bootstrap.min.js"></script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/choropleth.js"></script>
 
-
-  <script>
-    $('select').on('change', function(e) {
-      setFeature(this.value)
-      text = this.options[this.selectedIndex].text;
-    });
-  </script>
 </body>
 
 </html>
