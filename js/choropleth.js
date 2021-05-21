@@ -103,6 +103,17 @@ function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+/**
+ Util function to compute a range
+*/
+function range(start, end, step) {
+  var ans = [];
+  for (let i = start; i <= end; i+=step) {
+      ans.push(i);
+  }
+  return ans;
+}
+
 /*************************************************************
 *
 * Leaflet : Add information on hovered distrinct on top right
@@ -117,12 +128,12 @@ info.onAdd = function (mymap) {
 
 // method that we will use to update the control based on feature properties passed
 //Needs to contain the first selected element text
-var text = "Population"
+var selected = $('select option:selected').text()
 info.update = function (district) {
 
   let value = polygonValues[district];
   this._div.innerHTML =  (district ?
-      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + text
+      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + selected
       : '<b> Hover over a district </b>');
 };
 
@@ -135,26 +146,8 @@ info.addTo(mymap);
 *
 **************************************/
 
+var div = L.DomUtil.create('div', 'info legend')
 var legend = L.control({position: 'bottomright'});
-
-legend.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-        labels = [];
-
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < grades.length; i++) {
-        div.innerHTML +=
-            '<i style="background:'  + '"></i> ' +
-            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-    }
-
-    return div;
-};
-
-legend.addTo(mymap)
-
 
 
 /**
@@ -180,9 +173,12 @@ async function setFeature(datapath){
 
   // Compute min/max and create scale accordingly
   const extent = d3.extent(_.values(mapValues));
-  const reds = d3.scaleLinear(extent, [0.3, 0.8])
+
+
+  const legendColors = d3.scaleSequential(extent,[0.3,1]);
+
   // Color scale function
-  const col = (x) => d3.interpolateReds(reds(x))
+  const col = (x) => d3.interpolateGnBu(legendColors(x))
   //Iterate over polygons, and update color
   for (const [district, polygon] of Object.entries(polygons)) {
     const num_acc = parseInt(mapValues[district])
@@ -191,12 +187,47 @@ async function setFeature(datapath){
     let s = col(num_acc)
     polygon.setStyle({
       fillColor: s,
-      fillOpacity: 0.5,
+      fillOpacity: 0.6,
       opacity: 0.6,
       color: s
     })
+  }
+
+
+
+
+
+
+  legend.onAdd = function (map) {
+      div.innerHTML = ' '
+
+      const rounding = Math.pow(10, extent[1].toString(10).length - 2)
+      const cells = 5;
+      const min = Math.round(extent[0] / rounding) * rounding;
+      const max = Math.ceil(extent[1] / rounding) * rounding;
+
+      const step = (max - min) / cells;
+      const r =  range(min,max,step);
+
+
+      // loop through our density intervals and generate a label with a colored square for each interval
+      for (var i = 0; i < r.length - 1 ; i++) {
+          div.innerHTML +=
+          '<i style="background:' + col((r[i] + r[i + 1]) / 2) + '"></i> ' +
+       numberWithSpaces(r[i]) + ' &ndash; ' + numberWithSpaces(r[i + 1]) + '<br>';
+      }
+
+      return div;
+  };
+
+  legend.addTo(mymap);
+
+
+
+
 }
-}
+
+
 
 // Default : set to population
 setFeature('../data/population.csv')

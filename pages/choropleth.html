@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0054)https://getbootstrap.com/docs/4.0/examples/jumbotron/# -->
+
+
 <html lang="en">
 
 <head>
@@ -20,13 +22,16 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 
   <!-- JS libs -->
+
   <script src="../js/lodash.js"></script>
   <script src="../js/d3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 </head>
 
 
 <body>
+
 
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="../index.html">Project Zozo : A Barcelona Visualization</a>
@@ -67,7 +72,7 @@
       </div>
       <div class="container">
         <div class="d-flex justify-content-center">
-          <select id="selectionBox" class="form-select form-select-sm mx-auto mt-3" aria-label="Default select example">
+          <select id="selectionBox" class="form-select form-select-sm mx-auto mt-3" aria-label="Default select example" autocomplete="off">
             <option selected value="../data/population.csv">Population</option>
             <option value="../data/births.csv">Birth</option>
             <option value="../data/deaths.csv">Death</option>
