@@ -6,10 +6,11 @@
 .popout-video--popout {
   border-radius: 25px;
   position: fixed;
-  left: 0;
+  left: 5%;
   top: 100;
-  width: 200px;
-  max-width: 50%;
+  width: 20%;
+  max-width: 20%;
+  z-index: 3;
   height: auto;
   -webkit-animation: popin 0.5s ease-in-out forwards;
   animation: popin 0.5s ease-in-out forwards;
@@ -106,13 +107,13 @@
   }
 
   to {
-    left: 300px;
+    left: 15%;
   }
 }
 
 @-webkit-keyframes popingup {
   from {
-    left: 300px
+    left: 15%
   }
 
   to {
