@@ -1,0 +1,141 @@
+,Neighborhood,2006-2010,2007-2011,2008-2012,2009-2013,2010-2014,Gender,District.Name,Neighborhood.Name
+0,el Raval,87.5,84.9,84.7,84.9,85.3,Female,Ciutat Vella,el Raval
+1,el Raval,77.9,75.1,75.7,76.2,76.5,Male,Ciutat Vella,el Raval
+2,el Barri Gòtic,88.0,84.3,84.4,87.5,84.4,Female,Ciutat Vella,el Barri Gòtic
+3,el Barri Gòtic,81.3,78.6,78.9,79.5,78.7,Male,Ciutat Vella,el Barri Gòtic
+4,la Barceloneta,88.2,85.3,84.4,86.3,84.7,Female,Ciutat Vella,la Barceloneta
+5,la Barceloneta,78.3,75.0,75.8,78.6,75.9,Male,Ciutat Vella,la Barceloneta
+6,"Sant Pere, Santa Caterina i la Ribera",88.9,85.9,86.1,85.5,85.3,Female,Ciutat Vella,"Sant Pere, Santa Caterina i la Ribera"
+7,"Sant Pere, Santa Caterina i la Ribera",80.9,78.0,77.7,78.8,78.3,Male,Ciutat Vella,"Sant Pere, Santa Caterina i la Ribera"
+8,el Fort Pienc,89.7,87.1,87.2,87.7,86.7,Female,Eixample,el Fort Pienc
+9,el Fort Pienc,83.0,80.7,80.9,80.2,81.4,Male,Eixample,el Fort Pienc
+10,la Sagrada Família,88.9,86.6,86.8,85.1,87.2,Female,Eixample,la Sagrada Família
+11,la Sagrada Família,83.2,80.6,81.0,79.2,81.3,Male,Eixample,la Sagrada Família
+12,la Dreta de l'Eixample,87.0,85.0,85.1,85.7,85.1,Female,Eixample,la Dreta de l'Eixample
+13,la Dreta de l'Eixample,81.2,78.9,79.3,79.1,80.1,Male,Eixample,la Dreta de l'Eixample
+14,l'Antiga Esquerra de l'Eixample,88.9,86.4,86.3,85.8,86.9,Female,Eixample,l'Antiga Esquerra de l'Eixample
+15,l'Antiga Esquerra de l'Eixample,82.3,79.8,80.3,80.3,80.8,Male,Eixample,l'Antiga Esquerra de l'Eixample
+16,la Nova Esquerra de l'Eixample,90.0,87.4,87.5,87.0,88.7,Female,Eixample,la Nova Esquerra de l'Eixample
+17,la Nova Esquerra de l'Eixample,82.1,79.9,80.0,81.4,81.0,Male,Eixample,la Nova Esquerra de l'Eixample
+18,Sant Antoni,89.0,86.3,86.5,86.0,87.6,Female,Eixample,Sant Antoni
+19,Sant Antoni,81.7,79.3,79.4,80.9,79.8,Male,Eixample,Sant Antoni
+20,la Marina de Port,88.5,86.2,86.5,88.1,87.7,Female,Sants-Montjuïc,la Marina de Port
+21,la Marina de Port,83.1,80.3,79.9,83.0,80.0,Male,Sants-Montjuïc,la Marina de Port
+22,la Font de la Guatlla,88.7,85.7,85.1,88.4,84.3,Female,Sants-Montjuïc,la Font de la Guatlla
+23,la Font de la Guatlla,81.5,77.9,78.1,84.2,78.8,Male,Sants-Montjuïc,la Font de la Guatlla
+24,Hostafrancs,87.5,85.4,86.3,81.7,87.4,Female,Sants-Montjuïc,Hostafrancs
+25,Hostafrancs,81.2,78.9,78.7,78.2,79.8,Male,Sants-Montjuïc,Hostafrancs
+26,la Bordeta,88.7,86.3,85.6,86.9,86.3,Female,Sants-Montjuïc,la Bordeta
+27,la Bordeta,83.9,80.9,80.4,81.8,80.9,Male,Sants-Montjuïc,la Bordeta
+28,Sants - Badal,88.4,85.9,86.4,87.8,87.7,Female,Sants-Montjuïc,Sants - Badal
+29,Sants - Badal,83.5,81.2,81.2,83.5,82.0,Male,Sants-Montjuïc,Sants - Badal
+30,Sants,89.4,86.5,86.2,86.5,86.1,Female,Sants-Montjuïc,Sants
+31,Sants,81.7,79.5,80.2,82.4,81.6,Male,Sants-Montjuïc,Sants
+32,les Corts,89.4,87.1,87.4,86.8,88.1,Female,Les Corts,les Corts
+33,les Corts,83.0,81.1,81.4,81.8,82.4,Male,Les Corts,les Corts
+34,la Maternitat i Sant Ramon,90.0,87.4,87.5,87.8,89.0,Female,Les Corts,la Maternitat i Sant Ramon
+35,la Maternitat i Sant Ramon,83.9,82.0,82.1,82.1,83.5,Male,Les Corts,la Maternitat i Sant Ramon
+36,Pedralbes,89.0,87.3,87.5,86.0,88.4,Female,Les Corts,Pedralbes
+37,Pedralbes,84.7,82.7,83.3,80.7,83.6,Male,Les Corts,Pedralbes
+38,"Vallvidrera, el Tibidabo i les Planes",83.4,80.5,80.4,88.5,82.2,Female,Sarrià-Sant Gervasi,"Vallvidrera, el Tibidabo i les Planes"
+39,"Vallvidrera, el Tibidabo i les Planes",78.9,77.6,77.8,81.0,79.0,Male,Sarrià-Sant Gervasi,"Vallvidrera, el Tibidabo i les Planes"
+40,Sarrià,90.9,87.6,87.1,84.8,86.9,Female,Sarrià-Sant Gervasi,Sarrià
+41,Sarrià,83.7,81.1,81.2,76.0,81.7,Male,Sarrià-Sant Gervasi,Sarrià
+42,les Tres Torres,89.7,87.7,87.6,85.1,88.1,Female,Sarrià-Sant Gervasi,les Tres Torres
+43,les Tres Torres,84.7,83.0,83.2,78.0,83.9,Male,Sarrià-Sant Gervasi,les Tres Torres
+44,Sant Gervasi - la Bonanova,89.2,86.5,86.5,85.7,86.8,Female,Sarrià-Sant Gervasi,Sant Gervasi - la Bonanova
+45,Sant Gervasi - la Bonanova,83.5,81.7,81.8,79.6,82.5,Male,Sarrià-Sant Gervasi,Sant Gervasi - la Bonanova
+46,Sant Gervasi - Galvany,88.8,86.5,86.4,87.7,86.9,Female,Sarrià-Sant Gervasi,Sant Gervasi - Galvany
+47,Sant Gervasi - Galvany,83.6,81.2,81.3,81.3,81.9,Male,Sarrià-Sant Gervasi,Sant Gervasi - Galvany
+48,el Putxet i el Farró,89.9,87.6,87.8,86.6,87.9,Female,Sarrià-Sant Gervasi,el Putxet i el Farró
+49,el Putxet i el Farró,83.7,81.3,81.7,81.2,82.5,Male,Sarrià-Sant Gervasi,el Putxet i el Farró
+50,Vallcarca i els Penitents,88.2,86.1,86.4,86.0,86.3,Female,Gràcia,Vallcarca i els Penitents
+51,Vallcarca i els Penitents,82.6,80.2,80.6,80.9,80.9,Male,Gràcia,Vallcarca i els Penitents
+52,el Coll,89.9,88.2,88.2,87.6,88.6,Female,Gràcia,el Coll
+53,el Coll,81.4,79.6,80.7,80.1,81.4,Male,Gràcia,el Coll
+54,la Salut,85.7,84.1,84.4,85.3,85.7,Female,Gràcia,la Salut
+55,la Salut,79.6,77.6,78.6,80.1,78.9,Male,Gràcia,la Salut
+56,la Vila de Gràcia,87.5,85.1,85.4,87.2,86.1,Female,Gràcia,la Vila de Gràcia
+57,la Vila de Gràcia,81.8,79.0,79.1,79.4,79.9,Male,Gràcia,la Vila de Gràcia
+58,el Camp d'en Grassot i Gràcia Nova,90.1,87.6,87.6,86.2,87.4,Female,Gràcia,el Camp d'en Grassot i Gràcia Nova
+59,el Camp d'en Grassot i Gràcia Nova,82.7,80.6,81.0,80.0,81.4,Male,Gràcia,el Camp d'en Grassot i Gràcia Nova
+60,el Baix Guinardó,90.1,87.2,86.8,85.1,86.8,Female,Horta-Guinardó,el Baix Guinardó
+61,el Baix Guinardó,83.9,81.2,81.1,81.0,81.0,Male,Horta-Guinardó,el Baix Guinardó
+62,Can Baró,88.2,86.2,86.0,85.5,86.6,Female,Horta-Guinardó,Can Baró
+63,Can Baró,81.5,78.9,80.3,78.8,81.1,Male,Horta-Guinardó,Can Baró
+64,el Guinardó,89.3,86.4,87.0,82.3,88.3,Female,Horta-Guinardó,el Guinardó
+65,el Guinardó,81.7,79.7,80.1,77.4,80.2,Male,Horta-Guinardó,el Guinardó
+66,la Font d'en Fargues,87.3,85.7,85.6,85.8,85.8,Female,Horta-Guinardó,la Font d'en Fargues
+67,la Font d'en Fargues,81.6,79.7,79.8,80.5,80.8,Male,Horta-Guinardó,la Font d'en Fargues
+68,el Carmel,88.8,86.6,87.2,87.8,88.1,Female,Horta-Guinardó,el Carmel
+69,el Carmel,80.7,78.7,79.0,77.8,79.4,Male,Horta-Guinardó,el Carmel
+70,la Teixonera,86.7,84.8,85.0,85.6,87.3,Female,Horta-Guinardó,la Teixonera
+71,la Teixonera,82.3,79.6,79.8,79.6,80.4,Male,Horta-Guinardó,la Teixonera
+72,Sant Genís dels Agudells,87.3,85.0,84.6,86.9,85.5,Female,Horta-Guinardó,Sant Genís dels Agudells
+73,Sant Genís dels Agudells,81.8,80.0,81.3,79.6,81.5,Male,Horta-Guinardó,Sant Genís dels Agudells
+74,Montbau,83.5,81.3,81.9,87.3,83.9,Female,Horta-Guinardó,Montbau
+75,Montbau,77.1,74.9,75.9,80.4,77.5,Male,Horta-Guinardó,Montbau
+76,la Vall d'Hebron,86.6,85.3,86.0,88.4,86.5,Female,Horta-Guinardó,la Vall d'Hebron
+77,la Vall d'Hebron,83.6,80.7,80.4,81.0,80.0,Male,Horta-Guinardó,la Vall d'Hebron
+78,la Clota,,,,,,Female,Horta-Guinardó,la Clota
+79,la Clota,,,,,,Male,Horta-Guinardó,la Clota
+80,Horta,87.1,85.5,85.5,86.5,86.0,Female,Horta-Guinardó,Horta
+81,Horta,81.4,78.8,79.4,79.7,80.7,Male,Horta-Guinardó,Horta
+82,Vilapicina i la Torre Llobeta,89.6,87.2,87.2,85.8,87.0,Female,Nou Barris,Vilapicina i la Torre Llobeta
+83,Vilapicina i la Torre Llobeta,81.8,79.1,79.7,79.8,79.8,Male,Nou Barris,Vilapicina i la Torre Llobeta
+84,Porta,88.3,86.0,86.5,87.0,87.7,Female,Nou Barris,Porta
+85,Porta,81.7,79.8,79.9,81.1,81.0,Male,Nou Barris,Porta
+86,el Turó de la Peira,90.4,87.8,88.0,86.0,89.8,Female,Nou Barris,el Turó de la Peira
+87,el Turó de la Peira,80.9,79.0,80.0,77.0,81.3,Male,Nou Barris,el Turó de la Peira
+88,Can Peguera,82.2,79.7,80.3,87.2,85.1,Female,Nou Barris,Can Peguera
+89,Can Peguera,74.7,72.3,71.8,77.9,75.0,Male,Nou Barris,Can Peguera
+90,la Guineueta,88.3,85.9,86.1,87.8,87.0,Female,Nou Barris,la Guineueta
+91,la Guineueta,80.9,78.6,78.8,80.1,81.0,Male,Nou Barris,la Guineueta
+92,Canyelles,89.6,86.0,85.9,83.5,86.5,Female,Nou Barris,Canyelles
+93,Canyelles,82.0,79.3,79.8,75.8,79.7,Male,Nou Barris,Canyelles
+94,les Roquetes,88.5,86.1,85.9,83.6,86.5,Female,Nou Barris,les Roquetes
+95,les Roquetes,79.2,76.7,76.8,69.0,77.6,Male,Nou Barris,les Roquetes
+96,Verdun,88.4,86.6,86.9,86.2,89.0,Female,Nou Barris,Verdun
+97,Verdun,80.2,77.8,78.1,79.6,77.7,Male,Nou Barris,Verdun
+98,la Prosperitat,89.6,87.1,87.4,80.5,88.4,Female,Nou Barris,la Prosperitat
+99,la Prosperitat,81.7,79.3,80.1,77.7,80.4,Male,Nou Barris,la Prosperitat
+100,la Trinitat Nova,87.4,84.5,84.1,87.7,83.3,Female,Nou Barris,la Trinitat Nova
+101,la Trinitat Nova,78.0,75.9,75.4,79.8,76.6,Male,Nou Barris,la Trinitat Nova
+102,Torre Baró,,81.7,81.6,83.1,84.8,Female,Nou Barris,Torre Baró
+103,Torre Baró,,70.7,69.5,73.1,71.3,Male,Nou Barris,Torre Baró
+104,Ciutat Meridiana,87.9,85.3,85.7,86.3,88.2,Female,Nou Barris,Ciutat Meridiana
+105,Ciutat Meridiana,80.4,78.0,78.2,78.3,79.3,Male,Nou Barris,Ciutat Meridiana
+106,Vallbona,,,,,78.4,Female,Nou Barris,Vallbona
+107,Vallbona,,,,,76.0,Male,Nou Barris,Vallbona
+108,la Trinitat Vella,87.0,85.8,86.3,86.9,89.5,Female,Sant Andreu,la Trinitat Vella
+109,la Trinitat Vella,80.4,77.7,79.0,80.6,80.8,Male,Sant Andreu,la Trinitat Vella
+110,Baró de Viver,82.4,79.9,,88.0,85.7,Female,Sant Andreu,Baró de Viver
+111,Baró de Viver,74.2,71.2,,81.3,74.6,Male,Sant Andreu,Baró de Viver
+112,el Bon Pastor,86.3,84.8,85.6,88.5,86.8,Female,Sant Andreu,el Bon Pastor
+113,el Bon Pastor,80.4,77.8,78.0,80.3,78.1,Male,Sant Andreu,el Bon Pastor
+114,Sant Andreu,88.8,86.4,86.7,88.3,87.8,Female,Sant Andreu,Sant Andreu
+115,Sant Andreu,81.7,79.7,80.3,81.8,81.2,Male,Sant Andreu,Sant Andreu
+116,la Sagrera,89.9,87.1,87.3,87.4,88.2,Female,Sant Andreu,la Sagrera
+117,la Sagrera,83.7,81.3,81.6,81.3,82.2,Male,Sant Andreu,la Sagrera
+118,el Congrés i els Indians,89.9,87.5,87.8,87.7,88.9,Female,Sant Andreu,el Congrés i els Indians
+119,el Congrés i els Indians,81.7,79.2,79.5,80.9,80.3,Male,Sant Andreu,el Congrés i els Indians
+120,Navas,89.8,87.4,87.6,86.0,89.6,Female,Sant Andreu,Navas
+121,Navas,82.5,80.4,80.6,80.5,82.3,Male,Sant Andreu,Navas
+122,el Camp de l'Arpa del Clot,89.1,86.6,87.2,88.3,87.5,Female,Sant Martí,el Camp de l'Arpa del Clot
+123,el Camp de l'Arpa del Clot,82.9,80.4,81.1,82.4,81.9,Male,Sant Martí,el Camp de l'Arpa del Clot
+124,el Clot,88.7,86.7,87.2,86.9,88.6,Female,Sant Martí,el Clot
+125,el Clot,81.9,80.3,80.6,78.9,81.3,Male,Sant Martí,el Clot
+126,el Parc i la Llacuna del Poblenou,88.1,85.4,85.6,87.9,85.6,Female,Sant Martí,el Parc i la Llacuna del Poblenou
+127,el Parc i la Llacuna del Poblenou,82.4,79.8,80.2,81.8,80.5,Male,Sant Martí,el Parc i la Llacuna del Poblenou
+128,la Vila Olímpica del Poblenou,90.4,87.0,88.0,85.1,87.5,Female,Sant Martí,la Vila Olímpica del Poblenou
+129,la Vila Olímpica del Poblenou,87.2,82.6,82.1,80.2,82.7,Male,Sant Martí,la Vila Olímpica del Poblenou
+130,el Poblenou,88.1,85.7,86.1,85.8,87.1,Female,Sant Martí,el Poblenou
+131,el Poblenou,81.4,78.7,78.4,78.8,79.5,Male,Sant Martí,el Poblenou
+132,Diagonal Mar i el Front Marítim del Poblenou,88.1,87.3,87.4,87.3,88.1,Female,Sant Martí,Diagonal Mar i el Front Marítim del Poblenou
+133,Diagonal Mar i el Front Marítim del Poblenou,82.1,80.9,81.2,79.7,82.2,Male,Sant Martí,Diagonal Mar i el Front Marítim del Poblenou
+134,el Besòs i el Maresme,86.8,85.0,85.5,86.6,86.4,Female,Sant Martí,el Besòs i el Maresme
+135,el Besòs i el Maresme,80.2,78.1,78.4,79.8,79.6,Male,Sant Martí,el Besòs i el Maresme
+136,Provençals del Poblenou,88.4,86.7,86.5,86.3,88.4,Female,Sant Martí,Provençals del Poblenou
+137,Provençals del Poblenou,80.4,78.8,79.4,80.1,81.5,Male,Sant Martí,Provençals del Poblenou
+138,Sant Martí de Provençals,88.8,86.1,86.2,86.4,87.2,Female,Sant Martí,Sant Martí de Provençals
+139,Sant Martí de Provençals,81.9,79.5,79.7,80.5,80.2,Male,Sant Martí,Sant Martí de Provençals

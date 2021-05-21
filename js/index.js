@@ -129,9 +129,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // set video container off the screen for the slide in animation
         videoContainer.style.top = `-${videoHeight}px`;
         ignoreThis = false;
+        mymap.invalidateSize()
+        mymap.setView([41.37, 2.1592], 11);
+        console.log(d3.select('#mapid').style('width', '100%'))
       }
       // Otherwise move map back up
     } else {
+      console.log(d3.select('#mapid').style('width', '600px'))
       graphContainer.classList.remove('mapleftmargin');
       if(!ignoreThis){
         graphContainer.classList.add('mapleftmarginundo');
@@ -146,6 +150,13 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('resize', function() {
     videoHeight = videoContainer.offsetHeight;
     introContainer.style.height = `${videoHeight}px`;
+
+    if(window.scrollY > videoHeight + 200){
+      console.log('resizing')
+      mymap.invalidateSize()
+      mymap.setView([41.37, 2.1592], 11);
+    }
+
   });
 });
 

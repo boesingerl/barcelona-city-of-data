@@ -16,10 +16,14 @@
   <!-- CSS -->
   <link href="../css/bootstrap.min.css" rel="stylesheet">
   <link href="../css/jumbotron.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.css">
 
   <!-- JS -->
   <script src="../js/lodash.js"></script>
   <script src="../js/d3.js"></script>
+
+  <script src="https://d3js.org/d3.v3.js"></script>
+  <script src="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.js"></script>
 
 </head>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
@@ -48,6 +52,10 @@
         </li>
 
         <li class="nav-item">
+          <a class="nav-link" href="names.html">Evolution of most common names</a>
+        </li>
+
+        <li class="nav-item">
           <a class="nav-link" href="about.html">About us</a>
         </li>
 
@@ -59,9 +67,17 @@
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
-      <div class="container d-flex justify-content-center pb-5">
-        <h1> District comparison </h1>
+      <div>
+        <div class="container d-flex justify-content-center pb-5">
+          <h1> District comparison </h1>
+          <p class="ml-5">
+            Hover over a district to display information about it. </br>
+            Click on it to lock/unlock it in the table.
+          </p>
+        </div>
+
       </div>
+
       <div class="container d-flex">
         <div>
           <div id="mapid" style="width: 600px; height: 400px;"></div>
@@ -117,13 +133,20 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Graph1</h2>
+          <div class="chart-container"></div>
+          <script>
+
+
+
+
+
+          </script>
         </div>
         <div class="col-md-4">
-          <h2>Graph2</h2>
+          <h2></h2>
         </div>
         <div class="col-md-4">
-          <h2>Graph3</h2>
+          <h2></h2>
         </div>
       </div>
 
