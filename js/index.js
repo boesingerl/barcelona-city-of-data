@@ -129,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // set video container off the screen for the slide in animation
         videoContainer.style.top = `-${videoHeight}px`;
         ignoreThis = false;
-        console.log("a")
         mymap.invalidateSize()
         mymap.setView([41.37, 2.1592], 11);
         console.log(d3.select('#mapid').style('width', '100%'))

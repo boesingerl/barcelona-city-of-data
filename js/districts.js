@@ -118,6 +118,18 @@ class DistrictViz {
       d3.select("#dens" + i).text(obj['density'])
       d3.select("#neigh" + i).text(obj['neighborhoods'].length)
       d3.select("#area" + i).text(obj['area'])
+
+
+      let drawplot = async () => {
+        let filtered = (district_data.filter(x => districts.includes(x.className)))
+        let data = filtered
+        if(data.length == 2 && data[0].className != districts[0]){
+          data = [data[1], data[0]]
+        }
+        RadarChart.draw(".chart-container", data);
+      };
+      drawplot()
+
     }
   }
 
@@ -134,3 +146,24 @@ f().then(polygons => {
     obj['polygon'].on('mouseover', () => viz.onHover(district))
   }
 });
+RadarChart.defaultConfig.color = (i) => {return ['red','blue', 'orange'][i]}
+RadarChart.defaultConfig.radius = 3;
+RadarChart.defaultConfig.w = 300;
+RadarChart.defaultConfig.h = 300;
+
+var district_data = null
+
+let data = d3.csv("../data/district_comp.csv", function(d) {
+  return {
+    className: d['District.Name'], // convert "Year" column to Date
+    axes : [
+      {axis:'Life expectancy', value:d['life_exp']},
+      {axis:'Population', value:d['pop']},
+      {axis:'Births/hab', value:d['births_per']},
+      {axis:'Unemployment score', value:d['unemployed_score']},
+      {axis:'Deaths score (higher is better)', value:d['deaths_score']},
+  ]
+  };
+}, function(error, data) {
+    district_data = data
+  });
