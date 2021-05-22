@@ -35,56 +35,111 @@
 <body>
 
 
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../index.html">Project Zozo : A Barcelona Visualization</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="choropleth.html">Choropleth and Cartogram</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="districts.html">District comparison</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="names.html">Evolution of most common names</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="about.html">About us</a>
-        </li>
-
-      </ul>
-    </div>
-  </nav>
 
   <main role="main">
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container d-flex justify-content-center pb-5">
-        <h1>Choropleth Map and Cartogram</h1>
-      </div>
-      <div class="container d-flex justify-content-center">
-        <div id="mapid" style="width: 600px; height: 400px;"></div>
-      </div>
-      <div class="container">
-        <div class="d-flex justify-content-center">
+    <div id="mapid" style="position:absolute;width: 100%; height: 100%; top:0"></div>
+    <div class="justify-content-center pl-5 floatmap top right">
+      <table class="table w-100">
+        <thead class="bg-dark text-white">
+          <tr>
+            <th scope="col w-50">Category</th>
+            <th scope="col w-50" id='name0'>District 1</th>
+            <th scope="col w-50" id='name1'>District 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Area (km2)</th>
+            <td id='area0'>0</td>
+            <td id='area1'>0</td>
 
-          <select id="selectionBox" class="form-select form-select-sm mx-auto mt-3" aria-label="Default select example" autocomplete="off">
-            <option selected value="../data/population.csv">Population</option>
-            <option value="../data/births.csv">Birth</option>
-            <option value="../data/deaths.csv">Death</option>
-            <option value="../data/unemployment.csv">Unemployment</option>
-          </select>
+          </tr>
+          <tr>
+            <th scope="row">Population</th>
+            <td id='pop0'>0</td>
+            <td id='pop1'>0</td>
+
+          </tr>
+          <tr>
+            <th scope="row">Density (inhabitants/km2)</th>
+            <td id='dens0'>0</td>
+            <td id='dens1'>0</td>
+          </tr>
+          <tr>
+            <th scope="row"># Neighborhoods</th>
+            <td id='neigh0'>0</td>
+            <td id='neigh1'>0</td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <select id="selectionBox" class="form-select floatmap bottom left bg-dark text-white" aria-label="Default select example" autocomplete="off" style="width:auto;">
+      <option selected value="../data/population.csv">Population</option>
+      <option value="../data/births.csv">Birth</option>
+      <option value="../data/deaths.csv">Death</option>
+      <option value="../data/unemployment.csv">Unemployment</option>
+    </select>
+
+    <div id='graphContainer' class="container floatmap bottom right scaleddown">
+
+      <!-- Example row of columns -->
+      <div class="container d-flex justify-content-center p-2">
+        <h1 id='selectionText'>Currently showing : Overall</h1>
+      </div>
+
+      <div class="d-flex justify-content-center p-4">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Y-axis starting from zero</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Population over time</h5>
+          <div id="graphPop"></div>
+        </div>
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Births over time</h5>
+          <div id="graphBirth"></div>
+        </div>
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Deaths over time</h5>
+          <div id="graphDeath"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Unemployment over time</h5>
+          <div id="graphUnemployment"></div>
+        </div>
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Immigrants over time</h5>
+          <div id="graphImmigrants"></div>
+        </div>
+        <div class="col-xl"style="max-width:100%">
+          <h5 class="text-center">Population per gender</h5>
+          <div id="graphPopGender"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Population age</h5>
+          <div id="graphPopAge"></div>
+        </div>
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Death age</h5>
+          <div id="graphDeathAge"></div>
+        </div>
+        <div class="col-xl" style="max-width:100%">
+          <h5 class="text-center">Immigrants by age</h5>
+          <div id="graphImmigrantAge"></div>
         </div>
       </div>
     </div>
@@ -107,6 +162,9 @@
   <script src="../js/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script src="../js/choropleth.js"></script>
+  <script src="../js/graph.js"></script>
+  <script src="../js/index.js"></script>
+  <script src="../js/districts.js"></script>
 
 </body>
 

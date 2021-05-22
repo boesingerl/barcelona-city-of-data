@@ -5,14 +5,18 @@
 *
 *********************************/
 
-var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-var mymap = L.map('mapid', {
-  maxBounds: bounds
-}).setView([41.37, 2.1592], 11);
+//var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
+
+var bounds = L.latLngBounds(L.latLng(41.49983532494226,2.597236633300781), L.latLng(41.25974300098081,2.0259475708007817))
+
+//var bounds = L.latLngBounds(L.latLng(5.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
+//var mymap = L.map('mapid').setView([41.37, 2.1592], 11);
+
+var mymap = L.map('mapid', { zoomControl: false }).setView([41.37, 2.1592], 12).setMaxBounds(bounds);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
   maxZoom: 18,
-  minZoom: 11,
+  minZoom: 12,
   id: 'mapbox/light-v10',
   tileSize: 512,
   zoomOffset: -1
@@ -52,7 +56,7 @@ function highlight(e, district) {
 }
 
 var polygonValues = {}
-
+var polygons_info = {}
 /**
  On hover release : update style
 */
@@ -65,18 +69,29 @@ function resetHighlight(e) {
   info.update();
 }
 
+window.addEventListener('resize', function() {
+  //console.log(d3.select('#graphContainer').style('height'))
+  //console.log(window.innerHeight)
+  //d3.select('#graphContainer').style('transform', 'scale(0.1)')
+
+});
+
 mymap.getRenderer(mymap).options.padding = 0.5;
 
 // Load a single polygon from geojson
 let load_poly = async (name, filename, polygons) => {
-  let coords = await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+  let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
+            .then(res => res.json())
+            .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
   let polygon = L.geoJSON(coords).addTo(mymap);
 
   polygon.on({
       mouseover: e => highlight(e,name),
       mouseout: resetHighlight
   });
+  polygon.on('click', () => update(name))
   polygons[name] = polygon;
+  polygons_info[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   polygonValues[name] = 0
 
 }
@@ -94,7 +109,19 @@ let f = async function() {
 // List of all polygons (promise)
 var poly = f()
 
-var info = L.control();
+
+poly.then(polygons => {
+  let viz = new DistrictViz(polygons_info,2)
+  for (const [district, obj] of Object.entries(polygons_info)) {
+    obj['polygon'].on('click', () => viz.onClick(district))
+    obj['polygon'].on('mouseover', () => viz.onHover(district))
+  }
+});
+
+
+var div = L.DomUtil.create('div', 'info legend bg-dark text-white')
+var legend = L.control({position: 'topleft'});
+var info = L.control({position: 'topleft'});
 
 /**
  Util function to render numbers nicely
@@ -121,7 +148,7 @@ function range(start, end, step) {
 **************************************************************/
 
 info.onAdd = function (mymap) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div = L.DomUtil.create('div', 'info bg-dark text-white text-center', L.DomUtil.get('')); // create a div with a class "info"
     this.update();
     return this._div;
 };
@@ -137,7 +164,7 @@ info.update = function (district) {
       : '<b> Hover over a district </b>');
 };
 
-info.addTo(mymap);
+
 
 
 /*************************************
@@ -146,8 +173,7 @@ info.addTo(mymap);
 *
 **************************************/
 
-var div = L.DomUtil.create('div', 'info legend')
-var legend = L.control({position: 'bottomright'});
+
 
 
 /**
@@ -183,7 +209,6 @@ async function setFeature(datapath){
   for (const [district, polygon] of Object.entries(polygons)) {
     const num_acc = parseInt(mapValues[district])
     polygonValues[district] = num_acc
-    polygon.bindPopup(`District ${district} : ${num_acc}`)
     let s = col(num_acc)
     polygon.setStyle({
       fillColor: s,
@@ -221,7 +246,7 @@ async function setFeature(datapath){
   };
 
   legend.addTo(mymap);
-
+  info.addTo(mymap);
 
 
 

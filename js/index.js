@@ -3,7 +3,7 @@
 *     Leaflet map definition
 *
 *********************************/
-
+/*
 // Create bounds so we can't zoom too far
 var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
 var mymap = L.map('mapid', {
@@ -94,12 +94,15 @@ poly.then(polygons => {
   }
 })
 
+*/
+
 /********************************
 *
 *     Moving map on-scroll
 *
 *********************************/
 
+/*
 // Only add it once document loaded
 document.addEventListener('DOMContentLoaded', function() {
   // select all container
@@ -159,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   });
 });
-
+*/
 
 /********************************
 *
@@ -185,37 +188,37 @@ let load_graphs = async function(){
   //wait for polygons to load first
   await poly
   // Create all bar graphs
-  const graphPop = new HistGraph("data/population.csv", "graphPop", {
+  const graphPop = new HistGraph("../data/population.csv", "graphPop", {
     "color": changingColor()
   })
-  const graphBirth = new HistGraph("data/births.csv", "graphBirth", {
+  const graphBirth = new HistGraph("../data/births.csv", "graphBirth", {
     "color": changingColor()
   })
-  const graphDeath = new HistGraph("data/deaths.csv", "graphDeath", {
+  const graphDeath = new HistGraph("../data/deaths.csv", "graphDeath", {
     "color": changingColor()
   })
 
-  const graphUnemployment = new HistGraph("data/unemployment.csv", "graphUnemployment", {
+  const graphUnemployment = new HistGraph("../data/unemployment.csv", "graphUnemployment", {
     "color": changingColor()
   })
-  const graphImmigrants = new HistGraph("data/immigrants_by_nationality.csv", "graphImmigrants", {
+  const graphImmigrants = new HistGraph("../data/immigrants_by_nationality.csv", "graphImmigrants", {
     "color": changingColor()
   })
-  const graphPopGender = new HistGraph("data/population.csv", "graphPopGender", {
+  const graphPopGender = new HistGraph("../data/population.csv", "graphPopGender", {
     "yearFeature": "Gender",
     "color": changingColor()
   })
 
-  const graphPopAge = new HistGraph("data/population.csv", "graphPopAge", {
+  const graphPopAge = new HistGraph("../data/population.csv", "graphPopAge", {
     "yearFeature": "Age",
     "color": changingColor()
   })
-  const graphDeathAge = new HistGraph("data/deaths.csv", "graphDeathAge", {
+  const graphDeathAge = new HistGraph("../data/deaths.csv", "graphDeathAge", {
     "yearFeature": "Age",
     "color": changingColor()
   })
 
-  const graphImmigrantAge = new HistGraph("data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
+  const graphImmigrantAge = new HistGraph("../data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
     "yearFeature": "Age",
     "color": changingColor(),
     "mainFeature":"Immigrants"
@@ -235,6 +238,7 @@ function update(district) {
       allGraphs.then(graphs => graphs.map(x => x.updateYAxis(true)))
     }
   })))
+  /*
   poly.then(pol => {
 
     Object.values(pol).forEach(p => p.setStyle({fillColor:'#7CC6FE', weight:2}))
@@ -242,7 +246,7 @@ function update(district) {
     pol[district].setStyle({
     fillColor: "#8789C0",
     weight:3
-  })})
+  })})*/
 
 }
 

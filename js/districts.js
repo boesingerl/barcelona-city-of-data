@@ -1,4 +1,4 @@
-
+/*
   var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063),L.latLng(41.26696898724201, 1.953506497265627))
 	var mymap = L.map('mapid',{
     maxBounds: bounds
@@ -34,17 +34,18 @@
   /**
    On hover : update style
   */
+  /*
   function highlight(e) {
       var layer = e.target;
       layer.setStyle({
           weight:3,
           fillOpacity: 0.7
       });
-  }
+  }*/
 
   /**
    On hover release : update style
-  */
+  *//*
   function resetHighlight(e) {
     var layer = e.target;
     layer.setStyle({
@@ -75,7 +76,7 @@ let f = async function() {
   }
   return polygons;
 };
-
+*/
 class DistrictViz {
 
   constructor(polygons, max=2) {
@@ -91,7 +92,7 @@ class DistrictViz {
     }
     let newlen = this.districts.push(d)
     if(newlen > 2){
-      this.polygons[this.districts[0]]['polygon'].setStyle({fillColor:'#7CC6FE'})
+      //this.polygons[this.districts[0]]['polygon'].setStyle({fillColor:'#7CC6FE'})
       this.districts.shift()
     }
     console.log(this.districts)
@@ -107,12 +108,12 @@ class DistrictViz {
   }
   updatePlot(districts){
     for (const [district, obj] of Object.entries(this.polygons)) {
-      obj['polygon'].setStyle({fillColor:'#7CC6FE'})
+      //obj['polygon'].setStyle({fillColor:'#7CC6FE'})
     }
     for(let i = 0; i < districts.length; i++){
       const d = districts[i]
       const obj = this.polygons[d]
-      obj['polygon'].setStyle({fillColor:this.colors[i]})
+      //obj['polygon'].setStyle({fillColor:this.colors[i]})
       d3.select("#name" + i).text(d)
       d3.select("#pop" + i).text(obj['population'])
       d3.select("#dens" + i).text(obj['density'])
@@ -128,7 +129,7 @@ class DistrictViz {
         }
         RadarChart.draw(".chart-container", data);
       };
-      drawplot()
+      //drawplot()
 
     }
   }
@@ -138,7 +139,7 @@ class DistrictViz {
   }
 }
 
-
+/*
 f().then(polygons => {
   let viz = new DistrictViz(polygons,2)
   for (const [district, obj] of Object.entries(polygons)) {
@@ -167,3 +168,4 @@ let data = d3.csv("../data/district_comp.csv", function(d) {
 }, function(error, data) {
     district_data = data
   });
+*/
