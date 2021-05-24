@@ -60,7 +60,8 @@ class HistGraph {
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
       .attr("transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")");
+        "translate(" + this.margin.left + "," + this.margin.top + ")")
+      .attr("id", "someid")
 
 
     // X axis
@@ -88,23 +89,50 @@ class HistGraph {
     svg.append("g").attr("class", "axisy")
       .call(d3.axisLeft(y));
 
+      let g = svg.append('g').attr('id', 'bargroupg')
 
+/*
     // Bars
-    svg.append('g').attr("id", this.rectId).selectAll("mybar")
-      .data(totalData)
+    svg.append("g")
+      .selectAll("g")
+      // Enter in data = loop group per group
+      .data(data)
       .enter()
-      .append("rect")
-      .attr("x", function(d) {
-        return x(d.year);
-      })
-      .attr("y", function(d) {
-        return y(d.total);
-      })
-      .attr("width", x.bandwidth())
-      .attr("height", (d) => {
-        return this.height  - y(d.total);
-      })
-      .attr("fill", this.color)
+      .append("g")
+        .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+      .selectAll("rect")
+      .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+      .enter().append("rect")
+        .attr("x", function(d) { return xSubgroup(d.key); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", xSubgroup.bandwidth())
+        .attr("height", function(d) { return this.height - y(d.value); })
+        .attr("fill", function(d) { return color(d.key); });*/
+        let data = totalData
+        let groups = _.chain(totalData).map('year').uniq().value().sort()
+
+        var barGroups = g.selectAll("g.layer").data(data);
+        barGroups.enter().append("g").classed('layer', true)
+            .attr("transform", function(d) { return "translate(" + x(d.year) + ",0)"; });
+
+        barGroups.exit().remove();
+        //.data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); });
+        var bars = g.selectAll("g.layer").selectAll("rect")
+            .data(function(d) {return [d]});
+        bars.enter().append("rect")
+            .attr("width", x.bandwidth())
+            .attr("x", function(d) { return 0; })
+            .attr("fill", this.color)
+            .transition().duration(750)
+            .attr("y", function(d) { return y(d.total); })
+            .attr("height", (d) => { return this.height - y(d.total); });
+
+        bars
+            .transition().duration(750)
+            .attr("y", function(d) { return y(d.total); })
+            .attr("height", (d) => { return this.height - y(d.total); });
+
+        bars.exit().remove();
   }
 
   updateYAxis(startingFromZero, transitionDuration = 700){
@@ -123,7 +151,7 @@ class HistGraph {
 
     d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y))
 
-    let rects = d3.select('#' + this.rectId).selectAll("rect")
+    let rects = d3.select('#' + this.graphId).select('#bargroupg').selectAll("rect")
       .data(this.currentData)
 
     rects.enter()
@@ -142,12 +170,124 @@ class HistGraph {
 
   }
 
-  update(district, callBack = () => {}, transitionDuration = 500) {
+  update(districts, callBack = () => {}, transitionDuration = 500) {
 
-    let filtered_dat = _.filter(this.perDistrictData, (d) => d.name == district)
+    let filtered_dat = _.filter(this.perDistrictData, (d) => districts.includes(d.name))
+
+    let subgroups = districts//selected districts
+
+    //subgroups = ['Sant Martí', "Horta-Guinardó"]
+    let groups = _.chain(filtered_dat).map('year').uniq().value().sort() // year
 
     this.currentData = filtered_dat
 
+    let data = (_(this.currentData).groupBy('year').map((d,id) => Object.fromEntries([['year',id]].concat(d.map(i =>  [i['name'],i['total']]))  )).value())
+
+    let svg = d3.select('#' + this.graphId + ' svg g')
+
+
+    // Add X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, this.width])
+      .padding([0.2])
+  d3.select("#" + this.graphId).select(".axisx").transition().call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0.95 * d3.min(filtered_dat.map((d) => d.total)), d3.max(filtered_dat.map((d) => d.total))])
+    .range([ this.height, 0 ]);
+  d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack);
+
+
+  // Another scale for subgroup position?
+  var xSubgroup = d3.scaleBand()
+    .domain(subgroups)
+    .range([0, x.bandwidth()])
+    .padding([0.05])
+
+  // color palette = one color per subgroup
+  var color = d3.scaleOrdinal()
+    .domain(subgroups)
+    .range(['#377eb8','#e41a1c','#4daf4a'])
+
+  // Show the bars
+  /*
+  svg.
+    // Enter in data = loop group per group
+    .data(data)
+    .enter()
+    .append("g")
+      .attr("transform", function(d) { return "translate(" + x(d.year) + ",0)"; })
+    .selectAll("rect")
+    .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+    .enter().append("rect").transition()
+      .attr("x", function(d) { return xSubgroup(d.key); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("width", xSubgroup.bandwidth())
+      .attr("height", (d) => { console.log(this.height - y(d.value));return this.height - y(d.value); })
+      .attr("fill", function(d) { return color(d.key); });
+
+    let rects = d3.select('#' + this.rectId).selectAll("rect")
+    rects.exit().remove()
+*/
+
+
+let g = d3.select('#' + this.graphId).select('#bargroupg')
+var barGroups = g.selectAll("g.layer")
+
+  barGroups.exit().remove();
+
+  barGroups.data(data);
+
+
+
+barGroups.enter().append("g").classed('layer', true)
+    .attr("transform", function(d) { return "translate(" + x(d.year) + ",0)"; });
+
+barGroups.exit().remove();
+
+var bars = g.selectAll("g.layer").selectAll("rect")
+    .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); });
+
+    bars.exit().remove();
+
+    bars.enter().append("rect")
+
+    bars.exit().remove();
+
+    bars.attr("width", xSubgroup.bandwidth())
+    .attr("x", function(d) { return xSubgroup(d.key); })
+    .attr("fill", (d) => { if(districts.length > 1) {return color(d.key);} else {return this.color} })
+    .transition().duration(750)
+    .attr("y", function(d) { return y(d.value); })
+    .attr('width', x.bandwidth())
+    .attr("height", (d) => { return this.height - y(d.value); });
+
+bars
+    .transition().duration(750)
+    .attr("y", function(d) { return y(d.value); })
+    .attr("height", (d) => { return this.height - y(d.value); });
+
+
+/*
+d3.selectAll("#" + this.graphId + ' svg')
+.append('g').attr('id','mainbars').selectAll('g')
+  // Enter in data = loop group per group
+  .data(data)
+  .enter()
+  .append("g").attr('id','Groups')
+    .attr("transform", function(d) { return "translate(" + x(d.year) + ",0)"; })
+  .selectAll("rect")
+  .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+  .enter().append("rect")
+    .attr("x", function(d) { return xSubgroup(d.key); })
+    .attr("y", function(d) { return y(d.value); })
+    .attr("width", xSubgroup.bandwidth())
+    .attr("height", (d) => { return this.height - y(d.value); })
+    .attr("fill", function(d) { return color(d.key); });
+    */
+    /*
     let x = d3.scaleBand()
       .range([0, this.width])
       .domain(filtered_dat.map(function(d) {
@@ -178,5 +318,6 @@ class HistGraph {
       })
 
     rects.exit().remove()
+    */
   }
 }

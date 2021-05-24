@@ -37,7 +37,40 @@
   left: 20px;
 }
 
+.centerw{
+  left: 40%;
+    transform: translate(-50%, 0);
+}
+
+.centerh{
+  top: 50%;
+  -o-transform: translate(0, -50%);
+}
+
+.enterin {
+  -webkit-animation: popin 3s ease-in-out forwards;
+  animation: popin 3s ease-in-out forwards;
+}
+
+@-webkit-keyframes popin {
+  from{
+    right:-100%;
+  }
+  to {
+    right: 1%;
+  }
+}
+
+@keyframes popin {
+  from{
+    right:-100%;
+  }
+  to {
+    right: 1%;
+  }
+}
+
 .scaleddown{
-  transform: scale(0.55);
-  transform-origin: 100% 100%;
+  transform: scale(0.5);
+  transform-origin: 100% 0%;
 }

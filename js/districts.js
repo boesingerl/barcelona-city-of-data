@@ -87,16 +87,32 @@ class DistrictViz {
 
   onClick(d){
     if(this.districts.includes(d)){
+      let obj = this.polygons[this.districts[0]]['polygon']['_layers']
+      let fillColor = obj[Object.keys(obj)[0]]['options']['fillColor']
+      this.polygons[d]['polygon'].setStyle({color:fillColor})
       this.districts = this.districts.filter(dis => dis != d)
+      update(this.districts)
       return
     }
     let newlen = this.districts.push(d)
+
     if(newlen > 2){
-      //this.polygons[this.districts[0]]['polygon'].setStyle({fillColor:'#7CC6FE'})
+      let obj = this.polygons[this.districts[0]]['polygon']['_layers']
+      let fillColor = obj[Object.keys(obj)[0]]['options']['fillColor']
+      console.log(fillColor)
+      this.polygons[this.districts[0]]['polygon'].setStyle({color:fillColor})
       this.districts.shift()
     }
-    console.log(this.districts)
+    this.polygons[this.districts[0]]['polygon'].setStyle({color:'blue'})
+    if(newlen > 1){
+      this.polygons[this.districts[1]]['polygon'].setStyle({color:'red'})
+    }
+
     this.updatePlot(this.districts)
+
+    //TODO : Dirty fix : calling twice to force update
+    update(this.districts)
+    update(this.districts)
   }
 
   onHover(d){
@@ -129,6 +145,8 @@ class DistrictViz {
         }
         RadarChart.draw(".chart-container", data);
       };
+
+
       //drawplot()
 
     }

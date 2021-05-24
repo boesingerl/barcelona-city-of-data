@@ -223,17 +223,21 @@ let load_graphs = async function(){
     "color": changingColor(),
     "mainFeature":"Immigrants"
   })
-
+  //return [graphPop]
   return [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender, graphPopAge, graphDeathAge, graphImmigrantAge]
 }
 
 
 const allGraphs = load_graphs()
 
+allGraphs.then(() => {
+  setTimeout(function(){ resizeGraphContainer(); }, 1000);
+
+})
 // Call update function of bargraph, update text, and color on district selection
-function update(district) {
-  d3.select('#selectionText').text(`Currently showing ${district}`)
-  allGraphs.then(graphs => graphs.map(x => x.update(district, () => {
+function update(districts_) {
+  d3.select('#selectionText').text(`Currently showing ${districts_}`)
+  allGraphs.then(graphs => graphs.map(x => x.update(districts_, () => {
     if($('#flexSwitchCheckDefault').is(':checked')){
       allGraphs.then(graphs => graphs.map(x => x.updateYAxis(true)))
     }

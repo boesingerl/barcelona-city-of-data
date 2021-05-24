@@ -69,12 +69,17 @@ function resetHighlight(e) {
   info.update();
 }
 
-window.addEventListener('resize', function() {
-  //console.log(d3.select('#graphContainer').style('height'))
-  //console.log(window.innerHeight)
-  //d3.select('#graphContainer').style('transform', 'scale(0.1)')
+function resizeGraphContainer(){
+  console.log("hello")
+  let containerHeight = d3.select('#graphContainer').style('height')
+  containerHeight = +(containerHeight.split('px')[0])
+  let windowHeight = window.innerHeight
+  let scaling = (windowHeight / containerHeight)*0.8;
 
-});
+  d3.select('#graphContainer').style('transform', `scale(${scaling}) translate(0,-50%)`)
+}
+
+window.addEventListener('resize', resizeGraphContainer);
 
 mymap.getRenderer(mymap).options.padding = 0.5;
 
@@ -89,7 +94,7 @@ let load_poly = async (name, filename, polygons) => {
       mouseover: e => highlight(e,name),
       mouseout: resetHighlight
   });
-  polygon.on('click', () => update(name))
+  //polygon.on('click', () => update(name))
   polygons[name] = polygon;
   polygons_info[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   polygonValues[name] = 0
@@ -111,6 +116,7 @@ var poly = f()
 
 
 poly.then(polygons => {
+
   let viz = new DistrictViz(polygons_info,2)
   for (const [district, obj] of Object.entries(polygons_info)) {
     obj['polygon'].on('click', () => viz.onClick(district))
@@ -159,9 +165,11 @@ var selected = $('select option:selected').text()
 info.update = function (district) {
 
   let value = polygonValues[district];
+  if(this._div){
   this._div.innerHTML =  (district ?
       '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + selected
       : '<b> Hover over a district </b>');
+    }
 };
 
 
