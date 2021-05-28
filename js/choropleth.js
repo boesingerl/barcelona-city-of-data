@@ -1,16 +1,13 @@
-
 /********************************
 *
 *    Render leaflet map
 *
 *********************************/
 
-//var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-
+/**
+* Map Latitude and Longitude bounds
+*/
 var bounds = L.latLngBounds(L.latLng(41.49983532494226,2.597236633300781), L.latLng(41.25974300098081,2.0259475708007817))
-
-//var bounds = L.latLngBounds(L.latLng(5.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-//var mymap = L.map('mapid').setView([41.37, 2.1592], 11);
 
 var mymap = L.map('mapid', { zoomControl: false }).setView([41.37, 2.1592], 12).setMaxBounds(bounds);
 
@@ -41,9 +38,8 @@ mymap.on('drag', function() {
   });
 });
 
-
 /**
- On hover : update style
+* Highlights a district if hovered on
 */
 function highlight(e, district) {
     var layer = e.target;
@@ -52,13 +48,13 @@ function highlight(e, district) {
         fillOpacity: 0.7
     });
     info.update(district)
-
 }
 
 var polygonValues = {}
 var polygons_info = {}
+
 /**
- On hover release : update style
+* Resets a district style if hovered off
 */
 function resetHighlight(e) {
   var layer = e.target;
@@ -69,6 +65,9 @@ function resetHighlight(e) {
   info.update();
 }
 
+/**
+* Resizes the graph contained to fit the window size
+*/
 function resizeGraphContainer(){
   console.log("hello")
   let containerHeight = d3.select('#graphContainer').style('height')
@@ -83,26 +82,32 @@ window.addEventListener('resize', resizeGraphContainer);
 
 mymap.getRenderer(mymap).options.padding = 0.5;
 
-// Load a single polygon from geojson
+/**
+* Loads a single polygon from the geojson and initializes it
+*/
 let load_poly = async (name, filename, polygons) => {
+
   let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
             .then(res => res.json())
             .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
+
   let polygon = L.geoJSON(coords).addTo(mymap);
 
   polygon.on({
       mouseover: e => highlight(e,name),
       mouseout: resetHighlight
   });
-  //polygon.on('click', () => update(name))
+
   polygons[name] = polygon;
   polygons_info[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   polygonValues[name] = 0
 
 }
 
+/**
+*  Iterate over all polygons and loads them all
+*/
 
-// Iterate over all polygons and load them all
 let f = async function() {
   let polygons = {};
   for (const [name, filename] of Object.entries(districts)) {
@@ -111,10 +116,15 @@ let f = async function() {
   return polygons;
 };
 
-// List of all polygons (promise)
+/**
+* List of all polygons (promise)
+*/
 var poly = f()
 
-
+/**
+* Add onClick and onHover listeners once all polygons
+* have been loaded and correctyl initialized
+*/
 poly.then(polygons => {
 
   let viz = new DistrictViz(polygons_info,2)
@@ -124,20 +134,20 @@ poly.then(polygons => {
   }
 });
 
-
+// Create DOM element to place the choropleth legend
 var div = L.DomUtil.create('div', 'info legend bg-dark text-white')
 var legend = L.control({position: 'topleft'});
 var info = L.control({position: 'topleft'});
 
 /**
- Util function to render numbers nicely
+* Util function to render numbers nicely
 */
 function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 /**
- Util function to compute a range
+* Util function to compute a range
 */
 function range(start, end, step) {
   var ans = [];
@@ -159,21 +169,20 @@ info.onAdd = function (mymap) {
     return this._div;
 };
 
-// method that we will use to update the control based on feature properties passed
-//Needs to contain the first selected element text
-var selected = $('select option:selected').text()
-info.update = function (district) {
+/**
+* Updates the info content according to witch polygons
+* is hovered on, on the choropleth map
+*/
 
+info.update = function (district) {
   let value = polygonValues[district];
+
   if(this._div){
   this._div.innerHTML =  (district ?
-      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + selected
+      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('select option:selected').text()
       : '<b> Hover over a district </b>');
     }
 };
-
-
-
 
 /*************************************
 *
@@ -181,13 +190,8 @@ info.update = function (district) {
 *
 **************************************/
 
-
-
-
 /**
-
- Computes values for new feature, and updates heatmap accordingly
-
+* Computes heatmap values for new feature, and updates the choropleth map accordingly
 */
 async function setFeature(datapath){
   // Get list of polygons and data
@@ -207,8 +211,6 @@ async function setFeature(datapath){
 
   // Compute min/max and create scale accordingly
   const extent = d3.extent(_.values(mapValues));
-
-
   const legendColors = d3.scaleSequential(extent,[0.3,1]);
 
   // Color scale function
@@ -226,11 +228,9 @@ async function setFeature(datapath){
     })
   }
 
-
-
-
-
-
+  /**
+  * Add corresponding legend to the map
+  */
   legend.onAdd = function (map) {
       div.innerHTML = ' '
 
@@ -256,11 +256,7 @@ async function setFeature(datapath){
   legend.addTo(mymap);
   info.addTo(mymap);
 
-
-
 }
-
-
 
 // Default : set to population
 setFeature('../data/population.csv')
