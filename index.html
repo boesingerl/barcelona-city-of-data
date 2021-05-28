@@ -61,12 +61,32 @@
         </tbody>
       </table>
     </div>
-    <select id="selectionBox" class="form-select floatmap bottom left bg-dark text-white" aria-label="Default select example" autocomplete="off" style="width:auto;">
-      <option selected value="../data/population.csv">Population</option>
-      <option value="../data/births.csv">Birth</option>
-      <option value="../data/deaths.csv">Death</option>
-      <option value="../data/unemployment.csv">Unemployment</option>
-    </select>
+
+
+    <div class="form-select floatmap bottom left bg-dark text-white" style="width:auto;">
+      <div>
+        <select id="selectionBoxType" class="form-select bg-dark text-white" arial-label="Default select example" autocomplete="off" style="width:auto;">
+          <option selected value="../data/population.csv">Population</option>
+          <option value="../data/births.csv">Birth</option>
+          <option value="../data/deaths.csv">Death</option>
+          <option value="../data/unemployment.csv">Unemployment</option>
+        </select>
+      </div>
+
+      <div>
+        <select id="selectionBoxDate" class="form-select bg-dark text-white" arial-label="Default select example" autocomplete="off" style="width:auto;">
+          <option selected value=2017>2017</option>
+          <option value="2016">2016</option>
+          <option value="2015">2015</option>
+          <option value="2014">2014</option>
+          <option value="2013">2013</option>
+        </select>
+      </div>
+
+
+    </div>
+
+
 
     <div id='graphContainer' class="container floatmap centerh right scaleddown enterin">
 

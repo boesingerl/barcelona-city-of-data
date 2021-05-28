@@ -50,8 +50,10 @@ function highlight(e, district) {
     info.update(district)
 }
 
-var polygonValues = {}
-var polygons_info = {}
+let polygonValues = {}
+let polygons_info = {}
+
+let date = 2017
 
 /**
 * Resets a district style if hovered off
@@ -179,7 +181,7 @@ info.update = function (district) {
 
   if(this._div){
   this._div.innerHTML =  (district ?
-      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('select option:selected').text()
+      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('#selectionBoxType option:selected').text()
       : '<b> Hover over a district </b>');
     }
 };
@@ -193,18 +195,25 @@ info.update = function (district) {
 /**
 * Computes heatmap values for new feature, and updates the choropleth map accordingly
 */
-async function setFeature(datapath){
+async function setFeature(datapath, date){
   // Get list of polygons and data
   let polygons = await poly
   let data = await d3.csv(datapath)
+  //Deaths are only registered from 2015 to 2017
 
+  date = date.toString()
+
+  let filteredData = await _.filter(data, {"Year" : date});
   // Obtain data by district by summing up values of column Number in csv
-  let districtValues = _(data)
+  console.log(filteredData);
+  let districtValues =_(filteredData)
     .groupBy('District.Name')
     .map((d, id) => ({
       district: id,
       total: _.sumBy(d, (i) => Number(i['Number']))
     })).value()
+
+  //
 
   // Update map of values
   let mapValues = districtValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
@@ -259,10 +268,48 @@ async function setFeature(datapath){
 }
 
 // Default : set to population
-setFeature('../data/population.csv')
+setFeature('../data/population.csv',"2017")
 
+
+function hideDates() {
+  jQuery("#selectionBoxDate option").each(function(){
+      if(this.value == "2013" || this.value == "2014"){
+          jQuery(this).hide();
+      }
+  });
+
+}
 // On change of select value, update heatmap, and text
-$('select').on('change', function(e) {
-  setFeature(this.value)
-  text = this.options[this.selectedIndex].text;
+$('#selectionBoxType').on('change', function(e) {
+
+  let currentYear = $('#selectionBoxDate option:selected').val()
+  if(this.value == "../data/deaths.csv" && currentYear < 2015) {
+    currentYear = 2015
+    $("#selectionBoxDate").val("2015").change();
+    hideDates()
+
+  } else {
+    jQuery("#selectionBoxDate option").each(function(){
+      jQuery(this).show();
+
+    });
+  }
+  setFeature(this.value,currentYear)
+});
+
+$('#selectionBoxDate').on('change', function(e) {
+
+  let currentData = $('#selectionBoxType option:selected').val()
+  if(this.value < 2015 && currentData == "../data/deaths.csv") {
+    $("#selectionBoxDate").val("2015").change();
+    hideDates()
+  }else{
+    jQuery("#selectionBoxDate option").each(function(){
+      jQuery(this).show();
+
+    });
+
+  }
+  setFeature(currentData, this.value)
+
 });
