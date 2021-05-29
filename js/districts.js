@@ -99,7 +99,7 @@ class DistrictViz {
     if(newlen > 2){
       let obj = this.polygons[this.districts[0]]['polygon']['_layers']
       let fillColor = obj[Object.keys(obj)[0]]['options']['fillColor']
-      console.log(fillColor)
+
       this.polygons[this.districts[0]]['polygon'].setStyle({color:fillColor})
       this.districts.shift()
     }
@@ -138,7 +138,7 @@ class DistrictViz {
 
 
       let drawplot = async () => {
-        console.log(district_data)
+
         let filtered = (district_data.filter(x => districts.includes(x.className)))
         let data = filtered
         if(data.length == 2 && data[0].className != districts[0]){
