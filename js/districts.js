@@ -138,6 +138,7 @@ class DistrictViz {
 
 
       let drawplot = async () => {
+        console.log(district_data)
         let filtered = (district_data.filter(x => districts.includes(x.className)))
         let data = filtered
         if(data.length == 2 && data[0].className != districts[0]){
@@ -147,7 +148,7 @@ class DistrictViz {
       };
 
 
-      //drawplot()
+      drawplot()
 
     }
   }
@@ -157,14 +158,7 @@ class DistrictViz {
   }
 }
 
-/*
-f().then(polygons => {
-  let viz = new DistrictViz(polygons,2)
-  for (const [district, obj] of Object.entries(polygons)) {
-    obj['polygon'].on('click', () => viz.onClick(district))
-    obj['polygon'].on('mouseover', () => viz.onHover(district))
-  }
-});
+
 RadarChart.defaultConfig.color = (i) => {return ['red','blue', 'orange'][i]}
 RadarChart.defaultConfig.radius = 3;
 RadarChart.defaultConfig.w = 300;
@@ -172,7 +166,7 @@ RadarChart.defaultConfig.h = 300;
 
 var district_data = null
 
-let data = d3.csv("../data/district_comp.csv", function(d) {
+let data = d3old.csv("./data/district_comp.csv", function(d) {
   return {
     className: d['District.Name'], // convert "Year" column to Date
     axes : [
@@ -186,4 +180,3 @@ let data = d3.csv("../data/district_comp.csv", function(d) {
 }, function(error, data) {
     district_data = data
   });
-*/

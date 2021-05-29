@@ -71,7 +71,6 @@ function resetHighlight(e) {
 * Resizes the graph contained to fit the window size
 */
 function resizeGraphContainer(){
-  console.log("hello")
   let containerHeight = d3.select('#graphContainer').style('height')
   containerHeight = +(containerHeight.split('px')[0])
   let windowHeight = window.innerHeight
@@ -205,7 +204,7 @@ async function setFeature(datapath, date){
 
   let filteredData = await _.filter(data, {"Year" : date});
   // Obtain data by district by summing up values of column Number in csv
-  console.log(filteredData);
+
   let districtValues =_(filteredData)
     .groupBy('District.Name')
     .map((d, id) => ({

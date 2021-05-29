@@ -176,10 +176,60 @@ class HistGraph {
 
     let subgroups = districts//selected districts
 
+    if(districts.length == 0){
+
+      // X axis
+      let x = d3.scaleBand()
+        .range([0, this.width])
+        .domain(this.totalData.map(function(d) {
+          return d.year;
+        }).sort())
+        .padding(0.2);
+
+
+      // Y axis
+      let y = d3.scaleLinear()
+        .domain([0.95 * d3.min(this.totalData.map((d) => d.total)), d3.max(this.totalData.map((d) => d.total))])
+        .range([this.height, 0]);
+
+      let data = this.totalData
+      let g = d3.select('#' + this.graphId).select('#bargroupg')
+      let groups = _.chain(this.totalData).map('year').uniq().value().sort()
+
+      var barGroups = g.selectAll("g.layer").data(data);
+      barGroups.enter().append("g").classed('layer', true)
+          .attr("transform", function(d) { return "translate(" + x(d.year) + ",0)"; });
+
+      barGroups.exit().remove();
+      //.data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); });
+      var bars = g.selectAll("g.layer").selectAll("rect")
+          .data(function(d) {return [d]});
+      bars.enter().append("rect")
+          .attr("width", x.bandwidth())
+          .attr("x", function(d) { return 0; })
+          .attr("fill", this.color)
+          .transition().duration(750)
+          .attr("y", function(d) { return y(d.total); })
+          .attr("height", (d) => { return this.height - y(d.total); });
+
+      bars
+          .transition().duration(750)
+          .attr("y", function(d) { return y(d.total); })
+          .attr("height", (d) => { return this.height - y(d.total); });
+
+      bars.exit().remove();
+
+      d3.select("#" + this.graphId).select(".axisx").transition().call(d3.axisBottom(x).tickSize(0));
+
+      d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack);
+
+      return
+    }
     //subgroups = ['Sant Martí', "Horta-Guinardó"]
     let groups = _.chain(filtered_dat).map('year').uniq().value().sort() // year
 
     this.currentData = filtered_dat
+
 
     let data = (_(this.currentData).groupBy('year').map((d,id) => Object.fromEntries([['year',id]].concat(d.map(i =>  [i['name'],i['total']]))  )).value())
 
