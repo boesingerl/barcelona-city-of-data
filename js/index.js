@@ -199,29 +199,37 @@ let load_graphs = async function(){
   })
 
   const graphUnemployment = new HistGraph("../data/unemployment.csv", "graphUnemployment", {
-    "color": changingColor()
+    "color": changingColor(),
+    "filterMonth": "January"
   })
   const graphImmigrants = new HistGraph("../data/immigrants_by_nationality.csv", "graphImmigrants", {
     "color": changingColor()
   })
   const graphPopGender = new HistGraph("../data/population.csv", "graphPopGender", {
     "yearFeature": "Gender",
-    "color": changingColor()
+    "color": changingColor(),
+    "filterYear": 2017
   })
 
   const graphPopAge = new HistGraph("../data/population.csv", "graphPopAge", {
     "yearFeature": "Age",
-    "color": changingColor()
+    "color": changingColor(),
+    "xAxisPx":"12px",
+    "xAxisTrans": "translate(-20,10)rotate(-90)"
   })
   const graphDeathAge = new HistGraph("../data/deaths.csv", "graphDeathAge", {
     "yearFeature": "Age",
-    "color": changingColor()
+    "color": changingColor(),
+    "xAxisPx":"12px",
+    "xAxisTrans": "translate(-20,10)rotate(-90)"
   })
 
   const graphImmigrantAge = new HistGraph("../data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
     "yearFeature": "Age",
     "color": changingColor(),
-    "mainFeature":"Immigrants"
+    "mainFeature":"Immigrants",
+    "xAxisPx":"12px",
+    "xAxisTrans": "translate(-20,10)rotate(-90)"
   })
   //return [graphPop]
   return [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender, graphPopAge, graphDeathAge, graphImmigrantAge]

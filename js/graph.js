@@ -1,10 +1,10 @@
 class HistGraph {
 
-  constructor(datapath, graphId, {districtFeature = 'District.Name', yearFeature = 'Year', mainFeature = 'Number', color="#69b3a2", width_ = 300, height_ = 300, margin = {
-    top: 30,
+  constructor(datapath, graphId, {districtFeature = 'District.Name', yearFeature = 'Year', mainFeature = 'Number',xAxisPx="20px", xAxisTrans="translate(-10,0)rotate(-45)", yAxisPx="16px", color="#69b3a2", filterYear = null, filterMonth = null, width_ = 300, height_ = 300, margin = {
+    top: 10,
     right: 30,
     bottom: 70,
-    left: 60
+    left: 80
   }}={}) {
 
     this.margin  = margin
@@ -21,6 +21,13 @@ class HistGraph {
     this.yearFeature     = yearFeature
     this.mainFeature     = mainFeature
 
+    this.filterYear  = filterYear
+    this.filterMonth = filterMonth
+
+    this.xAxisPx = xAxisPx
+    this.xAxisTrans = xAxisTrans
+    this.yAxisPx = yAxisPx
+
     this.dataset.then(data => this.aggData(data))
                 .then(([districtD, totalD]) => {
                   this.perDistrictData = districtD
@@ -33,6 +40,13 @@ class HistGraph {
 
   aggData(data) {
 
+
+    if(this.filterYear){
+        data = _(data).filter(d => d.Year == this.filterYear).value()
+    }
+    if(this.filterMonth){
+      data = _(data).filter(d => d.Month == this.filterMonth).value()
+    }
     let per_district_pop = _(data)
       .groupBy(i => [i[this.yearFeature], i[this.districtFeature]])
       .map((d, id) => ({
@@ -77,17 +91,22 @@ class HistGraph {
       .attr("transform", "translate(0," + this.height + ")")
       .call(d3.axisBottom(x))
       .selectAll("text")
-      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("font-size", this.xAxisPx)
+      .attr("transform", this.xAxisTrans)
       .style("text-anchor", "end");
 
     // Y axis
+    let formatValue = d3.format(".2s");
     let y = d3.scaleLinear()
       .domain([0.95 * d3.min(totalData.map((d) => d.total)), d3.max(totalData.map((d) => d.total))])
-      .range([this.height, 0]);
+      .range([this.height, 0])
+
+
+
 
     // Add Y axis
     svg.append("g").attr("class", "axisy")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y).tickFormat(function(d) { return formatValue(d)})).selectAll("text").style("font-size", this.yAxisPx)
 
       let g = svg.append('g').attr('id', 'bargroupg')
 
@@ -149,10 +168,37 @@ class HistGraph {
       .range([this.height, 0]);
     }
 
-    d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y))
+    d3.select("#" + this.graphId).select(".axisy").transition().duration(transitionDuration).call(d3.axisLeft(y)).selectAll("text").style("font-size", this.yAxisPx)
+
+    let data = null
+
+
+
+    if(this.districts.length == 2){
+    data = this.currentData.sort((el1,el2) => {
+      if(el1.year == el2.year){
+        if (el1.name == this.districts[0]){
+          return -1
+        }else{
+          return 1
+        }
+
+      }else{
+        if(el1.year < el2.year){
+          return -1
+        }else{
+          return 1
+        }
+      }
+    })
+    console.log(this.districts)
+    console.log(data)
+  }else{
+    data = _.sortBy(this.currentData, ['year'])
+  }
 
     let rects = d3.select('#' + this.graphId).select('#bargroupg').selectAll("rect")
-      .data(this.currentData)
+      .data(data)
 
     rects.enter()
       .append('rect')
@@ -171,7 +217,7 @@ class HistGraph {
   }
 
   update(districts, callBack = () => {}, transitionDuration = 500) {
-
+    this.districts = districts
     let filtered_dat = _.filter(this.perDistrictData, (d) => districts.includes(d.name))
 
     let subgroups = districts//selected districts
@@ -221,7 +267,7 @@ class HistGraph {
 
       d3.select("#" + this.graphId).select(".axisx").transition().call(d3.axisBottom(x).tickSize(0));
 
-      d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack);
+      d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack).selectAll("text").style("font-size", this.yAxisPx);
 
       return
     }
@@ -247,7 +293,8 @@ class HistGraph {
   var y = d3.scaleLinear()
     .domain([0.95 * d3.min(filtered_dat.map((d) => d.total)), d3.max(filtered_dat.map((d) => d.total))])
     .range([ this.height, 0 ]);
-  d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack);
+
+  d3.select("#" + this.graphId).select(".axisy").transition().call(d3.axisLeft(y)).on('end', callBack).selectAll("text").style("font-size", this.yAxisPx);
 
 
   // Another scale for subgroup position?

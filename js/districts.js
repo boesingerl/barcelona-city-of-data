@@ -91,6 +91,13 @@ class DistrictViz {
       let fillColor = obj[Object.keys(obj)[0]]['options']['fillColor']
       this.polygons[d]['polygon'].setStyle({color:fillColor})
       this.districts = this.districts.filter(dis => dis != d)
+      if(this.districts.length > 0){
+        this.polygons[this.districts[0]]['polygon'].setStyle({color:'blue'})
+        if(this.districts.length > 1){
+          this.polygons[this.districts[1]]['polygon'].setStyle({color:'red'})
+        }
+      }
+
       update(this.districts)
       return
     }
@@ -159,7 +166,7 @@ class DistrictViz {
 }
 
 
-RadarChart.defaultConfig.color = (i) => {return ['red','blue', 'orange'][i]}
+RadarChart.defaultConfig.color = (i) => {return ['blue','red', 'orange'][i]}
 RadarChart.defaultConfig.radius = 3;
 RadarChart.defaultConfig.w = 300;
 RadarChart.defaultConfig.h = 300;
