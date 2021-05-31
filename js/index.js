@@ -28,43 +28,43 @@ let load_graphs = async function(){
   // we made the choice of not using modules because they are very related, so sharing the namespace is not that much of an issue
   await poly
   // Create all bar graphs, all these are handpicked
-  const graphPop = new HistGraph("../data/population.csv", "graphPop", {
+  const graphPop = new HistGraph("data/population.csv", "graphPop", {
     "color": changingColor()
   })
-  const graphBirth = new HistGraph("../data/births.csv", "graphBirth", {
+  const graphBirth = new HistGraph("data/births.csv", "graphBirth", {
     "color": changingColor()
   })
-  const graphDeath = new HistGraph("../data/deaths.csv", "graphDeath", {
+  const graphDeath = new HistGraph("data/deaths.csv", "graphDeath", {
     "color": changingColor()
   })
 
-  const graphUnemployment = new HistGraph("../data/unemployment.csv", "graphUnemployment", {
+  const graphUnemployment = new HistGraph("data/unemployment.csv", "graphUnemployment", {
     "color": changingColor(),
     "filterMonth": "January"
   })
-  const graphImmigrants = new HistGraph("../data/immigrants_by_nationality.csv", "graphImmigrants", {
+  const graphImmigrants = new HistGraph("data/immigrants_by_nationality.csv", "graphImmigrants", {
     "color": changingColor()
   })
-  const graphPopGender = new HistGraph("../data/population.csv", "graphPopGender", {
+  const graphPopGender = new HistGraph("data/population.csv", "graphPopGender", {
     "xFeature": "Gender",
     "color": changingColor(),
     "filterYear": 2017
   })
 
-  const graphPopAge = new HistGraph("../data/population.csv", "graphPopAge", {
+  const graphPopAge = new HistGraph("data/population.csv", "graphPopAge", {
     "xFeature": "Age",
     "color": changingColor(),
     "xAxisPx":"12px",
     "xAxisTrans": "translate(-10,10)rotate(-90)"
   })
-  const graphDeathAge = new HistGraph("../data/deaths.csv", "graphDeathAge", {
+  const graphDeathAge = new HistGraph("data/deaths.csv", "graphDeathAge", {
     "xFeature": "Age",
     "color": changingColor(),
     "xAxisPx":"12px",
     "xAxisTrans": "translate(-10,10)rotate(-90)"
   })
 
-  const graphImmigrantAge = new HistGraph("../data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
+  const graphImmigrantAge = new HistGraph("data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
     "xFeature": "Age",
     "color": changingColor(),
     "mainFeature":"Immigrants",
