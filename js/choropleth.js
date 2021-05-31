@@ -270,7 +270,7 @@ async function setFeature(datapath, date){
 }
 
 // Default : set to population
-setFeature('../data/population.csv',"2017")
+setFeature('data/population.csv',"2017")
 
 
 function hideDates() {
@@ -285,7 +285,7 @@ function hideDates() {
 $('#selectionBoxType').on('change', function(e) {
 
   let currentYear = $('#selectionBoxDate option:selected').val()
-  if(this.value == "../data/deaths.csv" && currentYear < 2015) {
+  if(this.value == "data/deaths.csv" && currentYear < 2015) {
     currentYear = 2015
     $("#selectionBoxDate").val("2015").change();
     hideDates()
@@ -303,7 +303,7 @@ $('#selectionBoxType').on('change', function(e) {
 $('#selectionBoxDate').on('change', function(e) {
 
   let currentData = $('#selectionBoxType option:selected').val()
-  if(this.value < 2015 && currentData == "../data/deaths.csv") {
+  if(this.value < 2015 && currentData == "data/deaths.csv") {
     $("#selectionBoxDate").val("2015").change();
     hideDates()
   }else{
