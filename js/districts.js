@@ -174,7 +174,7 @@ let drawplot = async (districts,district_data) => {
 var district_data = null
 
 // Load data using old d3js for Radarchart
-let data = d3old.csv("./data/district_comp.csv", function(d) {
+let data = d3old.csv("data/district_comp.csv", function(d) {
   return {
     className: d['District.Name'], // convert "Year" column to Date
     axes : [
