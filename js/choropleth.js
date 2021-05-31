@@ -89,7 +89,7 @@ mymap.getRenderer(mymap).options.padding = 0.5;
 */
 let load_poly = async (name, filename, polygons) => {
   // Load all informations inside the polygons geojson
-  let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
+  let [coords, population, area, neighborhoods, density] =  await fetch(`./polygons/${filename}`)
             .then(res => res.json())
             .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
   // create polygon in the map
