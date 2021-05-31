@@ -37,7 +37,7 @@
   left: 20px;
 }
 
-.centerw{
+.centerwoffset{
   left: 40%;
     transform: translate(-50%, 0);
 }

@@ -1,3 +1,4 @@
+'use strict';
 /********************************
 *
 *    Render leaflet map
@@ -7,6 +8,7 @@
 /**
 * Map Latitude and Longitude bounds
 */
+
 var bounds = L.latLngBounds(L.latLng(41.49983532494226,2.597236633300781), L.latLng(41.25974300098081,2.0259475708007817))
 
 var mymap = L.map('mapid', { zoomControl: false }).setView([41.37, 2.1592], 12).setMaxBounds(bounds);
@@ -52,7 +54,6 @@ function highlight(e, district) {
 
 let polygonValues = {}
 let polygons_info = {}
-
 let date = 2017
 
 /**
@@ -87,18 +88,20 @@ mymap.getRenderer(mymap).options.padding = 0.5;
 * Loads a single polygon from the geojson and initializes it
 */
 let load_poly = async (name, filename, polygons) => {
-
+  // Load all informations inside the polygons geojson
   let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
             .then(res => res.json())
             .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
-
+  // create polygon in the map
   let polygon = L.geoJSON(coords).addTo(mymap);
 
+  // update the on mouseover and onclick for choropleth
   polygon.on({
       mouseover: e => highlight(e,name),
       mouseout: resetHighlight
   });
 
+  // create a dict of polygons, to which we add the values for all districts, used by DistrictViz in district.js
   polygons[name] = polygon;
   polygons_info[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   polygonValues[name] = 0
@@ -124,10 +127,10 @@ var poly = f()
 
 /**
 * Add onClick and onHover listeners once all polygons
-* have been loaded and correctyl initialized
+* have been loaded and correctlly initialized
+* DistrictViz is implemented inside district.js
 */
 poly.then(polygons => {
-
   let viz = new DistrictViz(polygons_info,2)
   for (const [district, obj] of Object.entries(polygons_info)) {
     obj['polygon'].on('click', () => viz.onClick(district))
@@ -278,7 +281,7 @@ function hideDates() {
   });
 
 }
-// On change of select value, update heatmap, and text
+// On change of select value for the dataset, update heatmap, and text
 $('#selectionBoxType').on('change', function(e) {
 
   let currentYear = $('#selectionBoxDate option:selected').val()
@@ -296,6 +299,7 @@ $('#selectionBoxType').on('change', function(e) {
   setFeature(this.value,currentYear)
 });
 
+// On change of select value for the year, update heatmap, and text
 $('#selectionBoxDate').on('change', function(e) {
 
   let currentData = $('#selectionBoxType option:selected').val()

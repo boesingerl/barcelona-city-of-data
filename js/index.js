@@ -1,172 +1,8 @@
-/********************************
-*
-*     Leaflet map definition
-*
-*********************************/
-/*
-// Create bounds so we can't zoom too far
-var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-var mymap = L.map('mapid', {
-  maxBounds: bounds
-}).setView([41.37, 2.1592], 11);
-
-// Adding white background map layer
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-  maxZoom: 18,
-  minZoom: 11,
-  id: 'mapbox/light-v10',
-  tileSize: 512,
-  zoomOffset: -1
-}).addTo(mymap);
-
-// All geojson files we have to load
-let districts = {
-  'Nou Barris': 'nou-barris.json',
-  'Eixample': 'eixample.json',
-  'Ciutat Vella': 'ciutat-vella.json',
-  'Gràcia': 'gracia.json',
-  'Sant Martí': 'sant-marti.json',
-  'Sant Andreu': 'sant-andreu.json',
-  'Les Corts': 'les-corts.json',
-  'Horta-Guinardó': 'horta-guinardo.json',
-  'Sarrià-Sant Gervasi': 'sarria-sant-gervasi.json',
-  'Sants-Montjuïc': 'sants-montjuic.json',
-}
-
-mymap.on('drag', function() {
-  mymap.panInsideBounds(bounds, {
-    animate: true
-  });
-});
-
-mymap.getRenderer(mymap).options.padding = 0.5;
-
-
-// On hover function
-function highlight(e) {
-    var layer = e.target;
-    layer.setStyle({
-        fillOpacity: 0.7,
-        weight:3
-    });
-}
-
-// On hover release
-function resetHighlight(e) {
-  var layer = e.target;
-  layer.setStyle({
-      fillOpacity: 0.5,
-      weight:2
-  });
-}
-
-// Single polygon loading function
-let load_poly = async (name, filename, polygons) => {
-  let coords = await fetch(`polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
-  let polygon = L.geoJSON(coords).addTo(mymap);
-
-  polygon.setStyle({fillColor: '#7CC6FE',fillOpacity: 0.5, weight: 2 })
-  polygon.on({
-      mouseover: highlight,
-      mouseout:  resetHighlight
-  })
-
-  polygons[name] = polygon;
-}
-
-
-// Loading all polyhons
-let load_all_poly = async function() {
-  let polygons = {};
-  for (const [name, filename] of Object.entries(districts)) {
-    await load_poly(name, filename, polygons);
-  }
-  return polygons;
-};
-
-var poly = load_all_poly()
-
-// Add onclick and tooltips when clicking / hovering over district
-poly.then(polygons => {
-  for (const [district, polygon] of Object.entries(polygons)) {
-    polygon.on('click', () => update(district))
-    polygon.bindTooltip(district, {permanent:false, direction:"auto"});
-  }
-})
-
-*/
+'use strict';
 
 /********************************
 *
-*     Moving map on-scroll
-*
-*********************************/
-
-/*
-// Only add it once document loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // select all container
-  const introContainer = document.querySelector('.intro');
-  const videoContainer = document.querySelector('.popout-video');
-  const video = videoContainer.querySelector('#mapid');
-  const graphContainer = document.querySelector('#graphContainer')
-  let videoHeight = videoContainer.offsetHeight;
-
-  const closeVideoBtn = document.querySelector('.close-video');
-
-  let popOut = true;
-  let ignoreThis = true;
-
-  introContainer.style.height = `${videoHeight}px`;
-
-  // On scroll
-  window.addEventListener('scroll', function(e) {
-    if (window.scrollY > videoHeight + 200) {
-      // PopOut map to left
-      if (popOut) {
-
-        graphContainer.classList.remove('mapleftmarginundo');
-        graphContainer.classList.add('mapleftmargin');
-
-        videoContainer.classList.add('popout-video--popout');
-        // set video container off the screen for the slide in animation
-        videoContainer.style.top = `-${videoHeight}px`;
-        ignoreThis = false;
-        mymap.invalidateSize()
-        mymap.setView([41.37, 2.1592], 11);
-        console.log(d3.select('#mapid').style('width', '100%'))
-      }
-      // Otherwise move map back up
-    } else {
-      console.log(d3.select('#mapid').style('width', '600px'))
-      graphContainer.classList.remove('mapleftmargin');
-      if(!ignoreThis){
-        graphContainer.classList.add('mapleftmarginundo');
-      }
-      videoContainer.classList.remove('popout-video--popout');
-      videoContainer.style.top = `0px`;
-      popOut = true;
-    }
-  });
-
-
-  window.addEventListener('resize', function() {
-    videoHeight = videoContainer.offsetHeight;
-    introContainer.style.height = `${videoHeight}px`;
-
-    if(window.scrollY > videoHeight + 200){
-      console.log('resizing')
-      mymap.invalidateSize()
-      mymap.setView([41.37, 2.1592], 11);
-    }
-
-  });
-});
-*/
-
-/********************************
-*
-*    Adding graphs and colors
+*    Adding bar graphs and colors
 *
 *********************************/
 
@@ -182,12 +18,16 @@ function getNewColor() {
   }
 }
 
+// get instance of cyclicng color function
 let changingColor = getNewColor()
 
+
+/* Function that generates all graphs which we add inside the bar graph container*/
 let load_graphs = async function(){
-  //wait for polygons to load first
+  // wait for polygons to load first, all code related to the map is inside choropleth.js
+  // we made the choice of not using modules because they are very related, so sharing the namespace is not that much of an issue
   await poly
-  // Create all bar graphs
+  // Create all bar graphs, all these are handpicked
   const graphPop = new HistGraph("../data/population.csv", "graphPop", {
     "color": changingColor()
   })
@@ -206,59 +46,75 @@ let load_graphs = async function(){
     "color": changingColor()
   })
   const graphPopGender = new HistGraph("../data/population.csv", "graphPopGender", {
-    "yearFeature": "Gender",
+    "xFeature": "Gender",
     "color": changingColor(),
     "filterYear": 2017
   })
 
   const graphPopAge = new HistGraph("../data/population.csv", "graphPopAge", {
-    "yearFeature": "Age",
+    "xFeature": "Age",
     "color": changingColor(),
     "xAxisPx":"12px",
-    "xAxisTrans": "translate(-20,10)rotate(-90)"
+    "xAxisTrans": "translate(-10,10)rotate(-90)"
   })
   const graphDeathAge = new HistGraph("../data/deaths.csv", "graphDeathAge", {
-    "yearFeature": "Age",
+    "xFeature": "Age",
     "color": changingColor(),
     "xAxisPx":"12px",
-    "xAxisTrans": "translate(-20,10)rotate(-90)"
+    "xAxisTrans": "translate(-10,10)rotate(-90)"
   })
 
   const graphImmigrantAge = new HistGraph("../data/immigrants_emigrants_by_age.csv", "graphImmigrantAge", {
-    "yearFeature": "Age",
+    "xFeature": "Age",
     "color": changingColor(),
     "mainFeature":"Immigrants",
     "xAxisPx":"12px",
-    "xAxisTrans": "translate(-20,10)rotate(-90)"
+    "xAxisTrans": "translate(-10,10)rotate(-90)"
   })
-  //return [graphPop]
   return [graphPop, graphBirth, graphDeath, graphUnemployment, graphImmigrants, graphPopGender, graphPopAge, graphDeathAge, graphImmigrantAge]
 }
 
-
+// Load all graphs
 const allGraphs = load_graphs()
 
+
+/*
+After having loaded the graphs, need to update the size of the container to fit the screen
+We force responsiveness through a scale transform since our svgs have fixed size
+*/
 allGraphs.then(() => {
   setTimeout(function(){ resizeGraphContainer(); }, 1000);
 
 })
 // Call update function of bargraph, update text, and color on district selection
-function update(districts_) {
-  d3.select('#selectionText').text(`Currently showing ${districts_}`)
+async function update(districts_) {
+  //reset text first
+  for(let i = 0; i < 2; i++){
+    d3.select('#districtname' + i).text('')
+  }
+
+  // If we want to show for overall update it
+  if (districts_.length == 0){
+    d3.select('#selectionText').text(`Currently showing Overall`)
+  }else{
+
+    //write text for main
+    d3.select('#selectionText').text(`Currently showing : `)
+
+    //write text for each district
+    for(let i = 0; i < districts_.length; i++){
+      d3.select('#districtname' + i).text(districts_[i] + (i < districts_.length-1 ? ', ' : '' ))
+    }
+
+  }
+
+  //update all graphs
+  //also reset y axis starting from zero if switch is active
   allGraphs.then(graphs => graphs.map(x => x.update(districts_, () => {
     if($('#flexSwitchCheckDefault').is(':checked')){
       allGraphs.then(graphs => graphs.map(x => x.updateYAxis(true)))
     }
   })))
-  /*
-  poly.then(pol => {
-
-    Object.values(pol).forEach(p => p.setStyle({fillColor:'#7CC6FE', weight:2}))
-
-    pol[district].setStyle({
-    fillColor: "#8789C0",
-    weight:3
-  })})*/
 
 }
 
