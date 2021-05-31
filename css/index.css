@@ -130,3 +130,49 @@
   background: transparent;
   border: 0px
 }
+
+.inlined{
+  display:inline;
+}
+
+.fullmap{
+  position:absolute;
+  width: 100%;
+  height: 100%;
+  top:0;
+}
+
+.blue-shadow{
+text-shadow : 0 0 1px blue, 0 0 1px blue, 0 0 1px blue,  0 0 1px blue;
+}
+
+.red-shadow{
+text-shadow : 0 0 1px red, 0 0 1px red, 0 0 1px red,  0 0 1px red;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  background-color: DodgerBlue;
+  clear: both;
+}
+
+.rounded{
+  border-radius: .5rem;
+}
+.title-offset{
+  left: 35%;
+  transform: translate(-50%, 0);
+}
+.title{
+  font-family: 'Roboto', sans-serif;
+  text-shadow : 0 0 5px white, 0 0 5px white, 0 0 5px white,  0 0 5px white;
+}
+.flex-container > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+}

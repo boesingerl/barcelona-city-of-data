@@ -1,18 +1,21 @@
-
+'use strict';
 /********************************
 *
 *    Render leaflet map
 *
 *********************************/
 
-var bounds = L.latLngBounds(L.latLng(41.47308784765205, 2.365493774414063), L.latLng(41.26696898724201, 1.953506497265627))
-var mymap = L.map('mapid', {
-  maxBounds: bounds
-}).setView([41.37, 2.1592], 11);
+/**
+* Map Latitude and Longitude bounds
+*/
+
+var bounds = L.latLngBounds(L.latLng(41.49983532494226,2.597236633300781), L.latLng(41.25974300098081,2.0259475708007817))
+
+var mymap = L.map('mapid', { zoomControl: false }).setView([41.37, 2.1592], 12).setMaxBounds(bounds);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
   maxZoom: 18,
-  minZoom: 11,
+  minZoom: 12,
   id: 'mapbox/light-v10',
   tileSize: 512,
   zoomOffset: -1
@@ -37,9 +40,8 @@ mymap.on('drag', function() {
   });
 });
 
-
 /**
- On hover : update style
+* Highlights a district if hovered on
 */
 function highlight(e, district) {
     var layer = e.target;
@@ -48,13 +50,14 @@ function highlight(e, district) {
         fillOpacity: 0.7
     });
     info.update(district)
-
 }
 
-var polygonValues = {}
+let polygonValues = {}
+let polygons_info = {}
+let date = 2017
 
 /**
- On hover release : update style
+* Resets a district style if hovered off
 */
 function resetHighlight(e) {
   var layer = e.target;
@@ -65,24 +68,50 @@ function resetHighlight(e) {
   info.update();
 }
 
+/**
+* Resizes the graph contained to fit the window size
+*/
+function resizeGraphContainer(){
+  let containerHeight = d3.select('#graphContainer').style('height')
+  containerHeight = +(containerHeight.split('px')[0])
+  let windowHeight = window.innerHeight
+  let scaling = (windowHeight / containerHeight)*0.8;
+
+  d3.select('#graphContainer').style('transform', `scale(${scaling}) translate(0,-50%)`)
+}
+
+window.addEventListener('resize', resizeGraphContainer);
+
 mymap.getRenderer(mymap).options.padding = 0.5;
 
-// Load a single polygon from geojson
+/**
+* Loads a single polygon from the geojson and initializes it
+*/
 let load_poly = async (name, filename, polygons) => {
-  let coords = await fetch(`../polygons/${filename}`).then(res => res.json()).then(json => json['geometry'])
+  // Load all informations inside the polygons geojson
+  let [coords, population, area, neighborhoods, density] =  await fetch(`../polygons/${filename}`)
+            .then(res => res.json())
+            .then(json => [json['geometry'],json['extratags']['population'],json['extratags']['area'],json['extratags']['neighborhoods'], json['extratags']['density']])
+  // create polygon in the map
   let polygon = L.geoJSON(coords).addTo(mymap);
 
+  // update the on mouseover and onclick for choropleth
   polygon.on({
       mouseover: e => highlight(e,name),
       mouseout: resetHighlight
   });
+
+  // create a dict of polygons, to which we add the values for all districts, used by DistrictViz in district.js
   polygons[name] = polygon;
+  polygons_info[name] = {polygon:polygon, population:population, area:area, neighborhoods:neighborhoods, density:density};
   polygonValues[name] = 0
 
 }
 
+/**
+*  Iterate over all polygons and loads them all
+*/
 
-// Iterate over all polygons and load them all
 let f = async function() {
   let polygons = {};
   for (const [name, filename] of Object.entries(districts)) {
@@ -91,20 +120,38 @@ let f = async function() {
   return polygons;
 };
 
-// List of all polygons (promise)
+/**
+* List of all polygons (promise)
+*/
 var poly = f()
 
-var info = L.control();
+/**
+* Add onClick and onHover listeners once all polygons
+* have been loaded and correctlly initialized
+* DistrictViz is implemented inside district.js
+*/
+poly.then(polygons => {
+  let viz = new DistrictViz(polygons_info,2)
+  for (const [district, obj] of Object.entries(polygons_info)) {
+    obj['polygon'].on('click', () => viz.onClick(district))
+    obj['polygon'].on('mouseover', () => viz.onHover(district))
+  }
+});
+
+// Create DOM element to place the choropleth legend
+var div = L.DomUtil.create('div', 'info legend bg-dark text-white')
+var legend = L.control({position: 'topleft'});
+var info = L.control({position: 'topleft'});
 
 /**
- Util function to render numbers nicely
+* Util function to render numbers nicely
 */
 function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 /**
- Util function to compute a range
+* Util function to compute a range
 */
 function range(start, end, step) {
   var ans = [];
@@ -121,24 +168,25 @@ function range(start, end, step) {
 **************************************************************/
 
 info.onAdd = function (mymap) {
-    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div = L.DomUtil.create('div', 'info bg-dark text-white text-center', L.DomUtil.get('')); // create a div with a class "info"
     this.update();
     return this._div;
 };
 
-// method that we will use to update the control based on feature properties passed
-//Needs to contain the first selected element text
-var selected = $('select option:selected').text()
+/**
+* Updates the info content according to witch polygons
+* is hovered on, on the choropleth map
+*/
+
 info.update = function (district) {
-
   let value = polygonValues[district];
+
+  if(this._div){
   this._div.innerHTML =  (district ?
-      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " + selected
+      '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('#selectionBoxType option:selected').text()
       : '<b> Hover over a district </b>');
+    }
 };
-
-info.addTo(mymap);
-
 
 /*************************************
 *
@@ -146,35 +194,34 @@ info.addTo(mymap);
 *
 **************************************/
 
-var div = L.DomUtil.create('div', 'info legend')
-var legend = L.control({position: 'bottomright'});
-
-
 /**
-
- Computes values for new feature, and updates heatmap accordingly
-
+* Computes heatmap values for new feature, and updates the choropleth map accordingly
 */
-async function setFeature(datapath){
+async function setFeature(datapath, date){
   // Get list of polygons and data
   let polygons = await poly
   let data = await d3.csv(datapath)
+  //Deaths are only registered from 2015 to 2017
 
+  date = date.toString()
+
+  let filteredData = await _.filter(data, {"Year" : date});
   // Obtain data by district by summing up values of column Number in csv
-  let districtValues = _(data)
+
+  let districtValues =_(filteredData)
     .groupBy('District.Name')
     .map((d, id) => ({
       district: id,
       total: _.sumBy(d, (i) => Number(i['Number']))
     })).value()
 
+  //
+
   // Update map of values
   let mapValues = districtValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
 
   // Compute min/max and create scale accordingly
   const extent = d3.extent(_.values(mapValues));
-
-
   const legendColors = d3.scaleSequential(extent,[0.3,1]);
 
   // Color scale function
@@ -183,7 +230,6 @@ async function setFeature(datapath){
   for (const [district, polygon] of Object.entries(polygons)) {
     const num_acc = parseInt(mapValues[district])
     polygonValues[district] = num_acc
-    polygon.bindPopup(`District ${district} : ${num_acc}`)
     let s = col(num_acc)
     polygon.setStyle({
       fillColor: s,
@@ -193,11 +239,9 @@ async function setFeature(datapath){
     })
   }
 
-
-
-
-
-
+  /**
+  * Add corresponding legend to the map
+  */
   legend.onAdd = function (map) {
       div.innerHTML = ' '
 
@@ -221,19 +265,54 @@ async function setFeature(datapath){
   };
 
   legend.addTo(mymap);
-
-
-
+  info.addTo(mymap);
 
 }
 
-
-
 // Default : set to population
-setFeature('../data/population.csv')
+setFeature('../data/population.csv',"2017")
 
-// On change of select value, update heatmap, and text
-$('select').on('change', function(e) {
-  setFeature(this.value)
-  text = this.options[this.selectedIndex].text;
+
+function hideDates() {
+  jQuery("#selectionBoxDate option").each(function(){
+      if(this.value == "2013" || this.value == "2014"){
+          jQuery(this).hide();
+      }
+  });
+
+}
+// On change of select value for the dataset, update heatmap, and text
+$('#selectionBoxType').on('change', function(e) {
+
+  let currentYear = $('#selectionBoxDate option:selected').val()
+  if(this.value == "../data/deaths.csv" && currentYear < 2015) {
+    currentYear = 2015
+    $("#selectionBoxDate").val("2015").change();
+    hideDates()
+
+  } else {
+    jQuery("#selectionBoxDate option").each(function(){
+      jQuery(this).show();
+
+    });
+  }
+  setFeature(this.value,currentYear)
+});
+
+// On change of select value for the year, update heatmap, and text
+$('#selectionBoxDate').on('change', function(e) {
+
+  let currentData = $('#selectionBoxType option:selected').val()
+  if(this.value < 2015 && currentData == "../data/deaths.csv") {
+    $("#selectionBoxDate").val("2015").change();
+    hideDates()
+  }else{
+    jQuery("#selectionBoxDate option").each(function(){
+      jQuery(this).show();
+
+    });
+
+  }
+  setFeature(currentData, this.value)
+
 });
