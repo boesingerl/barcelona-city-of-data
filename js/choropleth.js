@@ -239,7 +239,7 @@ async function setFeature(datapath, date){
   // compute min/max and create scale accordingly
   const extent = d3.extent(_.values(mapValues));
 
-  console.log(extent);
+
   const legendColors = d3.scaleSequential(extent,[0.3,1]);
 
   // color scale
@@ -275,17 +275,15 @@ async function setFeature(datapath, date){
   */
   legend.onAdd = function (map) {
       div.innerHTML = ' '
-      console.log(extent[1].toString(10));
+
       const rounding = Math.pow(10, extent[1].toString(10).length - 2)
-      console.log(rounding);
+
       const cells = 5;
       const min = Math.round(extent[0] / rounding) * rounding;
       const max = Math.ceil(extent[1] / rounding) * rounding;
-      console.log(min)
-      console.log(max);;
       const step = (max - min) / cells;
       const r =  range(min,max,step).map(x => Math.round(x));
-      console.log(r);
+
 
 
       // loop through our density intervals and generate a label with a colored square for each interval
