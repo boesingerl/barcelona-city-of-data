@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://getbootstrap.com/docs/4.0/examples/jumbotron/# -->
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../index_files/favicon.ico">
+
+  <title>Project Zozo</title>
+
+
+  <!-- CSS -->
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/jumbotron.css" rel="stylesheet">
+
+  <!-- JS -->
+  <script src="../js/lodash.js"></script>
+  <script src="../js/d3.js"></script>
+
+</head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<script src='../js/echarts.simple.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js" integrity="sha512-cd6CHE+XWDQ33ElJqsi0MdNte3S+bQY819f7p3NUHgwQQLXSKjE4cPZTeGNI+vaxZynk1wVU3hoHmow3m089wA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src='../js/echarts-wordcloud.js'></script>
+<style>
+  html,
+  body,
+  #main {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+</style>
+
+<body onresize="onresize()">
+
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="../index.html">Project Zozo : A Barcelona Visualization</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="choropleth.html">Choropleth and Cartogram</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="districts.html">District comparison</a>
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="names.html">Evolution of most common names</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="about.html">About us</a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+
+  <main role="main">
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1> Evolution of most frequent names</h1>
+
+      </div>
+    </div>
+
+
+
+  </main>
+  <h2 id='val' style='text-align:center'>Current decade : 1970</h2>
+  <div class="d-flex justify-content-center">
+    <input type="range" class="form-range" min="0" max="10" oninput="editTextLabel(this.value)" onchange="showChange(this.value)" id="customRange2">
+  </div>
+
+  <div id='main'></div>
+  <script>
+    var selectedVal = 'TOTAL'
+    var values = ['Before 1930', '1930', '1940', '1950', '1960', '1970', '1980', '1990', '2000', '2010', 'TOTAL']
+
+    function editTextLabel(val) {
+      d3.select('#val').text(`Current decade : ${values[val]}`)
+    }
+
+    function showChange(val) {
+      selectedVal = values[val]
+      redrawChart(values[val])
+    }
+
+    function loadData(decade) {
+      return d3.csv('../data/most_frequent_names.csv').then(data => {
+        let filtered = _.filter(data, (o) => o.Decade == "TOTAL")
+        let mapped = _.map(filtered, (o) => ({
+          name: o.Name,
+          value: Math.log(o.Frequency)
+        }))
+        return mapped
+      })
+    }
+
+    async function redrawChart(decade){
+      let chart = echarts.init(document.getElementById('main'));
+      let data = await loadData(decade)
+
+      let maskImage1 = new Image();
+
+      let option1 = {
+        series: [{
+          type: 'wordCloud',
+          sizeRange: [12, 30],
+          rotationRange: [-90, 90],
+          rotationStep: 30,
+          gridSize: 5,
+          left: 'center',
+          top: '0px',
+          width: '600px',
+          height: '600px',
+          right: null,
+          bottom: null,
+          drawOutOfBound: true,
+          layoutAnimation: false,
+          shape: 'circle',
+          textStyle: {
+            normal: {
+              color: function() {
+                return 'rgb(' + [
+                  Math.round(Math.random() * 160),
+                  Math.round(Math.random() * 160),
+                  Math.round(Math.random() * 160)
+                ].join(',') + ')';
+              }
+            }
+
+          },
+          maskImage: maskImage1,
+          data: data
+        }]
+      };
+
+
+
+      maskImage1.onload = function() {
+        option1.series[0].maskImage
+        chart.setOption(option1);
+      }
+
+      maskImage1.src = '../data/districts.png';
+
+    }
+
+
+    redrawChart('TOTAL')
+    function onresize(){
+      let bodyWidth  = (d3.select('body').style('width'))
+      let bodyHeight = (d3.select('body').style('height'))
+      d3.select('canvas').attr('width', bodyWidth)
+      d3.select('canvas').attr('height', bodyHeight)
+      redrawChart(selectedVal)
+    }
+
+  </script>
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script>
+    window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+  </script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+
+
+  <script>
+
+
+  </script>
+</body>
+
+</html>

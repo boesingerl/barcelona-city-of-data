@@ -1,0 +1,178 @@
+.popout-video {
+  width: 50%;
+  position: relative;
+}
+
+.popout-video--popout {
+  border-radius: 25px;
+  position: fixed;
+  left: 5%;
+  top: 100;
+  width: 20%;
+  max-width: 20%;
+  z-index: 3;
+  height: auto;
+  -webkit-animation: popin 0.5s ease-in-out forwards;
+  animation: popin 0.5s ease-in-out forwards;
+}
+
+@-webkit-keyframes popin {
+  to {
+    top: 30%;
+  }
+}
+
+@keyframes popin {
+  to {
+    top: 30%;
+  }
+}
+
+.popout-video--popout:hover .popout-video__controls {
+  opacity: 1;
+}
+
+.popout-video video {
+  width: 50%;
+  vertical-align: middle;
+}
+
+.popout-video__controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5rem;
+  background: black;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, black 100%);
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.popout-video__controls .close-video {
+  width: 1.77rem;
+  height: 1.7rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+  border-radius: 50%;
+  transition: background 0.25s ease;
+}
+
+.popout-video__controls .close-video:hover {
+  background: rgba(50, 50, 50, 0.4);
+}
+
+.popout-video__controls .close-video:before,
+.popout-video__controls .close-video:after {
+  content: "";
+  position: absolute;
+  margin: auto;
+  width: 1rem;
+  height: 2px;
+  background: #fff;
+}
+
+.popout-video__controls .close-video:before {
+  transform: rotate(45deg);
+}
+
+.popout-video__controls .close-video:after {
+  transform: rotate(-45deg);
+}
+
+.mapleftmargin {
+  position: relative;
+  left: 0;
+  top: 100;
+  -webkit-animation: poping 0.5s ease-in-out forwards;
+}
+
+.mapleftmarginundo {
+  position: relative;
+  left: 0;
+  top: 100;
+  -webkit-animation: popingup 0.5s ease-in-out forwards;
+}
+
+@-webkit-keyframes poping {
+  from {
+    left: 0px
+  }
+
+  to {
+    left: 15%;
+  }
+}
+
+@-webkit-keyframes popingup {
+  from {
+    left: 15%
+  }
+
+  to {
+    left: 0px;
+  }
+}
+
+#mapid {
+  border-radius: 10px;
+}
+
+.mytooltip {
+  box-shadow: none;
+  background: transparent;
+  border: 0px
+}
+
+.inlined{
+  display:inline;
+}
+
+.fullmap{
+  position:absolute;
+  width: 100%;
+  height: 100%;
+  top:0;
+}
+
+.blue-shadow{
+text-shadow : 0 0 1px blue, 0 0 1px blue, 0 0 1px blue,  0 0 1px blue;
+}
+
+.red-shadow{
+text-shadow : 0 0 1px red, 0 0 1px red, 0 0 1px red,  0 0 1px red;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  background-color: DodgerBlue;
+  clear: both;
+}
+
+.rounded{
+  border-radius: .5rem;
+}
+.title-offset{
+  left: 35%;
+  transform: translate(-50%, 0);
+}
+.title{
+  font-family: 'Roboto', sans-serif;
+  text-shadow : 0 0 5px white, 0 0 5px white, 0 0 5px white,  0 0 5px white;
+}
+.flex-container > div {
+  background-color: #f1f1f1;
+  width: 100px;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
+  font-size: 30px;
+}
