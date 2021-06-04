@@ -244,7 +244,6 @@ async function setFeature(datapath, date){
     // update map of values
     popDistrictValues = popDistrictValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
 
-    console.log(popDistrictValues);
 
     for (const[district, value] of Object.entries(mapValues)) {
       let population = popDistrictValues[district]
