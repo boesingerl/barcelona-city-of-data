@@ -6,7 +6,7 @@
 | Marc Egli | 283231 |
 | Léopaul Boesinger | 288715 |
 
-[Milestone 1](milestones/milestone1/Milestone1.pdf) • [Milestone 2](milestones/milestone2/Milestone2.pdf) • [Milestone 3](#milestone-3)
+[Milestone 1](milestones/milestone1/Milestone1.pdf) • [Milestone 2](milestones/milestone2/Milestone2.pdf) • [Milestone 3](milestones/processbook.pdf)
 
 
 [Process book](milestones/processbook.pdf)
