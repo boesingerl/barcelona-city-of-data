@@ -224,7 +224,9 @@ async function setFeature(datapath, date){
 
   // update map of values
   let mapValues = districtValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
+  console.log(datapath)
   let perHabitant = !datapath.includes('population')
+  console.log(perHabitant)
   let dataPerHabitant = {}
 
 
