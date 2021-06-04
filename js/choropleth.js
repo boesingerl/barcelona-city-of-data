@@ -16,6 +16,8 @@ let mymap = L.map('mapid', { zoomControl: false }).setView([41.37, 2.1592], 12).
 let polygonValues = {}
 let polygonsInfo = {}
 const PER_HABITANTS = 10000
+const POP_FILE = "data/population.csv"
+const DEATH_FILE = "data/deaths.csv"
 
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -197,7 +199,7 @@ info.update = function (district,perHabitant) {
       '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('#selectionBoxType option:selected').text() +
           (perHabitant ? " for " + PER_HABITANTS.toString()+ " inhabitants" : " ")
       : '<b> Hover over a district </b>');
-    }
+   }
 };
 
 
@@ -229,7 +231,7 @@ async function setFeature(datapath, date){
 
 
   if(perHabitant){
-    let popData = await d3.csv('data/population.csv')
+    let popData = await d3.csv(POP_FILE)
 
     let popFilteredData = await _.filter(popData,  {"Year" : date});
     // obtain data by district by summing up values of column Number in csv
@@ -334,7 +336,7 @@ function hideDates() {
 $('#selectionBoxType').on('change', function(e) {
 
   let currentYear = $('#selectionBoxDate option:selected').val()
-  if(this.value == "data/deaths.csv" && currentYear < 2015) {
+  if(this.value == DEATH_FILE && currentYear < 2015) {
     currentYear = 2015
     $("#selectionBoxDate").val("2015").change();
     hideDates()
@@ -352,7 +354,7 @@ $('#selectionBoxType').on('change', function(e) {
 $('#selectionBoxDate').on('change', function(e) {
 
   let currentData = $('#selectionBoxType option:selected').val()
-  if(this.value < 2015 && currentData == "data/deaths.csv") {
+  if(this.value < 2015 && currentData == DEATH_FILE) {
     $("#selectionBoxDate").val("2015").change();
     hideDates()
   }else{
