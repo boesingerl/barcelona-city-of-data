@@ -197,7 +197,7 @@ info.update = function (district,perHabitant) {
       '<b>' + district + '</b><br />' + numberWithSpaces(value) +  " " +  $('#selectionBoxType option:selected').text() +
           (perHabitant ? " for " + PER_HABITANTS.toString()+ " inhabitants" : " ")
       : '<b> Hover over a district </b>');
-    }
+   }
 };
 
 
@@ -210,6 +210,7 @@ info.update = function (district,perHabitant) {
 async function setFeature(datapath, date){
   // get list of polygons and data
   let polygons = await poly
+  console.log(datapath)
   let data = await d3.csv(datapath)
   date = date.toString()
   let filteredData = await _.filter(data,  {"Year" : date});
@@ -231,7 +232,7 @@ async function setFeature(datapath, date){
 
 
   if(perHabitant){
-    let popData = await d3.csv('data/population.csv')
+    let popData = await d3.csv('../data/population.csv')
 
     let popFilteredData = await _.filter(popData,  {"Year" : date});
     // obtain data by district by summing up values of column Number in csv
