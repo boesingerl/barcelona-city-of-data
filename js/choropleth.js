@@ -229,8 +229,24 @@ async function setFeature(datapath, date){
 
 
   if(perHabitant){
+    let popData = await d3.csv('data/population.csv')
+
+    let popFilteredData = await _.filter(popData,  {"Year" : date});
+    // obtain data by district by summing up values of column Number in csv
+
+    let popDistrictValues =_(popFilteredData)
+      .groupBy('District.Name')
+      .map((d, id) => ({
+        district: id,
+        total: _.sumBy(d, (i) => Number(i['Number']))
+      })).value()
+
+    // update map of values
+    popDistrictValues = popDistrictValues.reduce((map, obj) => {map[obj.district] = obj.total; return map;}, {})
+
+
     for (const[district, value] of Object.entries(mapValues)) {
-      let population = polygonsInfo[district]['population'].replace(",", "");
+      let population = popDistrictValues[district]
       dataPerHabitant[district] =  Math.round(((parseInt(value)/ parseInt(population) ) * PER_HABITANTS))
     }
     mapValues = dataPerHabitant
