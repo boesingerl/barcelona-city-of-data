@@ -9,7 +9,7 @@
 [Milestone 1](milestones/milestone1/Milestone1.pdf) • [Milestone 2](milestones/milestone2/Milestone2.pdf) • [Milestone 3](#milestone-3)
 
 
-[Process book](processbook.pdf)
+[Process book](milestones/processbook.pdf)
 
 [Screencast](https://www.youtube.com/watch?v=qaJPogi9B5A)
 
