@@ -232,7 +232,7 @@ async function setFeature(datapath, date){
 
 
   if(perHabitant){
-    let popData = await d3.csv('../data/population.csv')
+    let popData = await d3.csv('data/population.csv')
 
     let popFilteredData = await _.filter(popData,  {"Year" : date});
     // obtain data by district by summing up values of column Number in csv
