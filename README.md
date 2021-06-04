@@ -11,7 +11,7 @@
 
 [Process book](processbook.pdf)
 
-[Screencast](link)
+[Screencast](https://www.youtube.com/watch?v=qaJPogi9B5A)
 
 
 ## Technical Setup
